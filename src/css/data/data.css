@@ -1,0 +1,21 @@
+html {
+    background-color:gray;
+}
+
+.grid {
+    display: grid ;    
+   grid-template-columns: max-content max-content;
+   /* grid-auto-columns: 34%; */
+   gap: 25%;
+
+}
+
+.card {
+    grid-auto-columns: 5%;
+    border-width: thin; 
+    border:thick double black;
+}
+
+h1 {
+    text-align: center;
+}

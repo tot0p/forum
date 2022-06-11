@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PWET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/style/profil.css" />
+    <link rel="stylesheet" type="text/css" href="/style/accueil.css" />
+    <link rel="stylesheet" type="text/css" href="/style/explorer.css" />
+</head>
+
+<body>
+    <div class="header">
+        <h1>forum</h1>
+        {{if .Connected}}
+        <div>
+            <a href="https://rickrolled.fr" class = "profil"> {{.User.Username}}</a> 
+            <div class="divProfilePicture2">
+                <img class = "pictureProfil2"src="data:image/png;base64, {{.ProfilePictureBase64}}"/>
+            </div>
+        </div>
+        {{else}}
+        <a href = "/register" class = "Register"> Register </a>
+        {{end}}
+        <div class="dropdown">
+            <button class="drop">
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class = "AllElement">
+            <a href = "/"> Acceuil </a>
+            {{if .Connected}}
+            <a href = "/post"> Post </a>
+            <a href = "/subjects"> Subjects </a>
+            <a href = "/profile" >  Profile </a>
+            <a href = "/signout"> Logout </a>
+            {{else}}
+            <a href = "/login"> Login</a>
+            <a href = "/register"> Register </a>    
+            {{end}}
+            </div>
+        </div>
+    </div>
+    <div class="Profil center">
+        <h2>Profile</h2>    <!--- IMAGE --> 
+    </div>
+    <div class ="tt"; style="color: rgb(0, 0, 0);">
+        <p>Change profile</p>
+    </div>
+    <div class="boubou3 Caseclassical">
+        <div class="div1">pwet</div>
+        <div class="div11">pwet</div>
+        <div class="div2">pwet</div>
+        <div class="div12">pwet</div>
+        <div class="div3">pwet</div>
+        <div class="div13">pwet</div>
+    </div>
+</body>
+</html>

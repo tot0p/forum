@@ -1,0 +1,85 @@
+.subject_display_container{
+    grid-area: 2 / 1 / 5 / 2;
+    background-color: #0E0B16;
+    display: grid;
+    width: 100%;
+    grid-template-rows: 20% 20% auto;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+}
+
+
+.main_subject_container {
+    grid-area: 1 / 1 / 3 / 4;
+    display: flex;
+    margin: 70px;
+    border: double 5px transparent;
+    border-radius: 80px;
+    background-image: linear-gradient(#E7DFDD,#E7DFDD), radial-gradient(circle at top left, #A239CA,#4717F6);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    transition: all .2s ease-out;
+}
+.main_subject_container:hover{
+    transform: scale(1.03);
+    margin-right: 100px;
+}
+
+.subject_description{
+    display: flex;
+    align-items: center;
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    margin-left: 50px;
+    grid-area: 2 / 2 / 3 / 3;
+    font-family: 'Dosis', sans-serif;
+    font-size: 100%;
+    color: #0E0B16;
+    outline: none;
+    text-decoration: none;
+    text-align: center;
+}
+
+.subject{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 100%;
+}
+.subject:hover{
+    transform: scale(1);
+    background-image: linear-gradient(#A239CA,#A239CA), linear-gradient(#4717F6,#4717F6);
+}
+
+.main_post_container{
+    grid-area: 3 / 1 / 4 / 4;
+    margin: 70px;
+    border: double 5px transparent;
+    border-radius: 80px;
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    transition: all .2s ease-out;
+    overflow :scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.main_post_container::-webkit-scrollbar {
+    display: none;
+  }
+.post:hover{
+    background-image: linear-gradient(#A239CA,#A239CA), linear-gradient(#E7DFDD,#E7DFDD);
+}
+
+.subject_post_container{
+    display: grid;
+    gap: 30px 0px;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

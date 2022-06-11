@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All_user</title>
+    <link rel="stylesheet" type="text/css" href="style/register.css" />
+</head> 
+
+<body>
+    <div> 
+        <table>
+            <thead>
+                <tr>
+                    <th>UUID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>RiotId</th>
+                    <th>BirthDate</th>
+                    <th>genre</th>
+                    <th>role</th>
+                    <th>premium</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $User := .AllUsers}}
+                <tr>
+                    <td>{{$User.UUID}}</td>
+                    <td>{{$User.Username}}</td>
+                    <td>{{$User.Email}}</td>
+                    <td>{{$User.FirstName}}</td>
+                    <td>{{$User.LastName}}</td>
+                    <td>{{$User.RiotId}}</td>
+                    <td>{{$User.BirthDate}}</td>
+                    <td>{{$User.Genre}}</td>
+                    <td>{{$User.Role}}</td>
+                    <td>{{$User.Premium}}</td>                
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 

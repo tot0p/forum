@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All_subject</title>
+    <link rel="stylesheet" type="text/css" href="/style/register.css" />
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+</head> 
+
+<body>
+    <div> 
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>NSFW</th>
+                    <th>Image</th>
+                    <th>Tags</th>
+                    <th>PublishDate</th>
+                    <th>LastPostDate</th>
+                    <th>AllPosts</th>
+                    <th>Owner</th>
+                    <th>ViewSubject</th>
+                    <th>DeleteSubject</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $Subject := .AllSubjects}}
+                <tr>
+                    <td>{{$Subject.Id}}</td>
+                    <td>{{$Subject.Title}}</td>
+                    <td>{{$Subject.NSFW}}</td>
+                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$Subject.ToBase64}}"/></td>
+                    <td>{{$Subject.Tags}}</td>
+                    <td>{{$Subject.PublishDate}}</td>
+                    <td>{{$Subject.LastPostDate}}</td>
+                    <td>{{$Subject.AllPosts}}</td>
+                    <td>{{$Subject.Owner}}</td>
+                    <th><a href="/subject/{{$Subject.Id}}">View</a></th>
+                    <form action ="/admin/subjects" method="post">
+                        <th><input type="submit" id="id" name="id" value="{{$Subject.Id}}"/></th>
+                    </form>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 

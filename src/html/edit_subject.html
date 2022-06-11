@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Subject</title>
+    <link rel="stylesheet" type="text/css" href="/style/register.css" />
+    <link rel="stylesheet" type="text/css" href="/style/login.css" />
+</head> 
+
+<body>
+    <div class ="page card-header" style = "margin-top:10%"> 
+        <h3>Edit Subject</h3> 
+        <form class="Login" action ="/update-subject/{{.Subject.Id}}" method="post" enctype="multipart/form-data">
+            <label for="title"> Title :   </label>
+            <input type="text" id="title" name="title" value="{{.Subject.Title}}"/>
+            <label for="description"> Description :   </label>
+            <input type="text" id="description" name="description" value="{{.Subject.Description}}"/>
+            <label for="nsfw"> NSFW :   </label>
+            <input type="checkbox" id="nsfw" name="nsfw" {{if eq .Subject.NSFW 1}} checked {{end}}/>
+            <label for="image"> Image :   </label>
+            <input type="file" onchange="ppUpload()" id="image" name="image" accept="image/png, image/jpeg">
+            <label for="tags"> Tags :   </label>
+            <input type="text" id="tags" name="tags" value="{{.Subject.Tags}}"/>
+            <p class="button">
+                <button>Edit Subject</button>
+            </p>
+        </form>
+    </div>
+</body>
+</html> 
