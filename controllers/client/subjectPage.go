@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"forum/models"
 	"forum/tools/request"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"text/template"
 )
 
 type SubjectPage struct {
@@ -22,6 +22,7 @@ type SubjectPage struct {
 	AllPost              []models.Post
 }
 
+//Function to get the Username of the actual session
 func (p SubjectPage) GetOwnerUsername(UUID string) string {
 	if _, ok := p.Usernames[UUID]; ok {
 		return p.Usernames[UUID]
@@ -43,6 +44,7 @@ func (p SubjectPage) GetOwnerUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
+//Function to create a page for a subject
 func (p *SubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	p.Usernames = make(map[string]string)
 	cookie, err := r.Cookie("SID")
@@ -58,14 +60,10 @@ func (p *SubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[st
 		w.Write([]byte("{\"err\":\"not exist\"}"))
 		return
 	}
-	for _, elem := range p.Subject.ConvertAllPosts() {
-		temp, err := request.GetPostById(elem)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			p.AllPost = append(p.AllPost, temp)
-		}
-	}
+	p.AllPost, _ = request.GetPostsBySubjectId(p.Subject.Id)
+	// if err != nil || p.AllPost == nil {
+
+	// }
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))
 	tmpl.Execute(w, p)

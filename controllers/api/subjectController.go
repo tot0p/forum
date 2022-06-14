@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-//Get all subjects
+//Function to get all Subject
 func GetAllSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allSubjects, err := repository.GetAllSubject()
 	if err != nil {
@@ -30,7 +30,7 @@ func GetAllSubject(paramsURL map[string]string, params map[string]interface{}, w
 	w.Write(subjects)
 }
 
-//Get a subject by his Id
+//Function to get a subject using an id
 func GetSubjectById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	subjectById, err := repository.GetSubject("id", paramsURL["id"])
 	if err != nil {
@@ -45,7 +45,7 @@ func GetSubjectById(paramsURL map[string]string, params map[string]interface{}, 
 	w.Write(subject)
 }
 
-//Search a subject
+//Function to Search a subject
 func SearchSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allSubjects, err := repository.GetAllSubject()
 	if err != nil {
@@ -71,7 +71,7 @@ func SearchSubject(paramsURL map[string]string, params map[string]interface{}, w
 	w.Write(subjects)
 }
 
-//Create a subject
+//Function to Create a subject
 func CreateSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -116,7 +116,7 @@ func CreateSubject(paramsURL map[string]string, params map[string]interface{}, w
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Delete a subject by his Id
+//Function to delete a subject by using an id
 func DeleteSubjectById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -149,7 +149,7 @@ func DeleteSubjectById(paramsURL map[string]string, params map[string]interface{
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Modify a subject by his Id
+//Function to modify a subject by using an id
 func PutSubjectsById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -218,7 +218,7 @@ func PutSubjectsById(paramsURL map[string]string, params map[string]interface{},
 	}
 }
 
-//Check if a subject is in a array of subjects
+//Function to Check if a subject is in a array of subjects
 func ContainsSubject(AllSubjects []models.Subject, subject models.Subject) bool {
 	for i := range AllSubjects {
 		if AllSubjects[i].Id == subject.Id {
@@ -228,7 +228,7 @@ func ContainsSubject(AllSubjects []models.Subject, subject models.Subject) bool 
 	return false
 }
 
-//Get a random subject
+//Function to get a random id of a subject
 func GetNbRandomSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetAllSubject()
 	if err != nil {
@@ -267,7 +267,7 @@ func GetNbRandomSubject(paramsURL map[string]string, params map[string]interface
 	w.Write(posts)
 }
 
-//Get the last updated subject
+//Function to get the last subject edited
 func GetSubjectLastUpdate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetSubjectLastUpdate()
 	if err != nil {
@@ -300,6 +300,7 @@ func GetSubjectLastUpdate(paramsURL map[string]string, params map[string]interfa
 	w.Write(posts)
 }
 
+//
 func SubjectLike(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -336,6 +337,17 @@ func SubjectLike(paramsURL map[string]string, params map[string]interface{}, w h
 		}
 	}
 	if !remove {
+		new = ""
+		for _, i := range Subject.ConvertDownVotes() {
+			if User.UUID == i {
+				remove = true
+			} else {
+				new += "#" + i
+			}
+		}
+		if remove {
+			Subject.DownVotes = new
+		}
 		Subject.UpVotes += "#" + User.UUID
 	} else {
 		Subject.UpVotes = new
@@ -380,6 +392,17 @@ func SubjectHate(paramsURL map[string]string, params map[string]interface{}, w h
 		}
 	}
 	if !remove {
+		new = ""
+		for _, i := range Subject.ConvertUpVotes() {
+			if User.UUID == i {
+				remove = true
+			} else {
+				new += "#" + i
+			}
+		}
+		if remove {
+			Subject.UpVotes = new
+		}
 		Subject.DownVotes += "#" + User.UUID
 	} else {
 		Subject.DownVotes = new
@@ -388,6 +411,7 @@ func SubjectHate(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
+//Function to Count the number of subject on the website
 func SubjectCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	Subject, err := repository.GetSubject("id", paramsURL["id"])
 	if err != nil {
@@ -401,4 +425,61 @@ func SubjectCount(paramsURL map[string]string, params map[string]interface{}, w 
 		return
 	}
 	w.Write(result)
+}
+
+//function to say if a user already like or dislike subject
+func UserLikeOrHateSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	if !session.GlobalSessions.SessionExist(sess.SessionID()) {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Session Invalid\"}"))
+		return
+	}
+	UserUUID, err := sess.Get("UUID")
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	User, err := repository.GetUser("UUID", UserUUID.(string))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Subject, err := repository.GetSubject("id", paramsURL["id"])
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	for _, i := range Subject.ConvertUpVotes() {
+		if i == User.UUID {
+			w.Write([]byte("{\"downvote\":false,\"upvote\":true}"))
+			return
+		}
+	}
+	for _, i := range Subject.ConvertDownVotes() {
+		if i == User.UUID {
+			w.Write([]byte("{\"downvote\":true,\"upvote\":false}"))
+			return
+		}
+	}
+	w.Write([]byte("{\"downvote\":false,\"upvote\":false}"))
+}
+
+func GetSubjectByUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	id := paramsURL["id"]
+	allSubject, err := repository.GetSubjectByUserId(id)
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	subject, err := json.Marshal(allSubject)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(subject)
 }

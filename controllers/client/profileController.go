@@ -5,8 +5,8 @@ import (
 	"forum/tools/request"
 	"forum/tools/riot"
 	modelsriot "forum/tools/riot/modelsRiot"
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 type ProfilePage struct {
@@ -15,8 +15,10 @@ type ProfilePage struct {
 	UserRiot     []modelsriot.Rank
 	SummonerName string
 	Connected    bool
+	Ranked       bool
 }
 
+//Function to create a profile page
 func (p *ProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {
@@ -26,7 +28,7 @@ func (p *ProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[st
 		p.Connected = err == nil
 	}
 	if !p.Connected {
-		http.Redirect(w, r, "/", http.StatusPermanentRedirect)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	p.UserRiot = riot.API.GetRankById(p.User.RiotId)
 	if len(p.UserRiot) < 1 {
@@ -34,6 +36,7 @@ func (p *ProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[st
 	} else {
 		p.SummonerName = p.UserRiot[0].SummonerName
 	}
+	p.Ranked = !(len(p.UserRiot) == 0)
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))
 	tmpl.Execute(w, p)

@@ -6,31 +6,32 @@
     <title>login Page</title>
     <link rel="stylesheet" type="text/css" href="style/login.css" />
 </head>
+
 <body>
-    <div class ="card">
-        <div class ="card-header">
+    <div class="card">
+        <div class="card-header">
             <h3>Sign in</h3>
         </div>
-        <div class ="card-body">
+        <div class="card-body">
         </div>
-    <form class ="Login"action ="/login" method="post">  
-        <label for="username" style ="white-space: nowrap;"> Username :   </label>
-        <input type="text" id="username" placeholder="Username"name="username" required/>
-        <label for="password" style ="white-space: nowrap;"> Password :   </label>
-        <input type="password" style ="white-space: nowrap;" id="password" placeholder="Password" name="password"required/> 
-        <p class= "button" >
-            <input class = "submit" type="submit"/>
-        </p>
-    </form>
-    
-    {{if .Err}}
-        <div class ="Error"> 
+        <form class="Login" action="/login" method="post">
+            <label for="username" style="white-space: nowrap;"> Username :   </label>
+            <input type="text" id="username" placeholder="Username" name="username" required/>
+            <label for="password" style="white-space: nowrap;"> Password :   </label>
+            <input type="password" style="white-space: nowrap;" id="password" placeholder="Password" name="password" required/>
+            <p class="button">
+                <input class="submit" type="submit" />
+            </p>
+        </form>
+
+        {{if .Err}}
+        <div class="Error">
             <p>
                 {{.Err}}
-            </p>    
+            </p>
         </div>
-    {{end}}
-</div>
+        {{end}}
+    </div>
 </body>
 
 

@@ -63,6 +63,10 @@ func InsertUserTable(user models.User) error {
 	if err == nil {
 		return errors.New("username already taken")
 	}
+	_, err = GetUser("email", user.Email)
+	if err == nil {
+		return errors.New("email already taken")
+	}
 	_, err = forumDatabase.ExecuteStatement(fmt.Sprintf(`INSERT INTO user
 	VALUES (
 		'%s',
@@ -143,7 +147,7 @@ func GetAllUser() (*[]models.User, error) {
 	userTable := new([]models.User)
 	for rows.Next() {
 		user := new(models.User)
-		rows.Scan(&user.UUID, &user.ProfilePicture, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium, &user.Follows)
+		rows.Scan(&user.UUID, &str, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium, &user.Follows)
 		user.ProfilePicture, err = hex.DecodeString(str)
 		*userTable = append(*userTable, *user)
 		if err != nil {

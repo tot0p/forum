@@ -17,6 +17,7 @@ type UpdateProfilePage struct {
 	SummonerName string
 }
 
+//Function to create a page on which you can update a profile
 func (p *UpdateProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	var err error
 	p.User = models.User{}

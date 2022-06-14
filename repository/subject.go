@@ -23,7 +23,6 @@ func CreateSubjectTable() error {
 		downvotes    STRING,
 		publishDate  STRING  NOT NULL,
 		lastPostDate STRING,
-		allPosts     STRING,
 		owner        STRING  REFERENCES subject (UUID) 
 							 NOT NULL
 	);
@@ -56,7 +55,6 @@ func InsertSubjectTable(subject models.Subject) error {
 		downvotes,
 		publishDate,
 		lastPostDate,
-		allPosts,
 		owner
 	)
 	VALUES (
@@ -69,10 +67,9 @@ func InsertSubjectTable(subject models.Subject) error {
 		'%s',
 		'%s',
 		'%s',
-		'%s',
 		'%s'
 	);
-`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.AllPosts, subject.Owner))
+`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner))
 	return err
 }
 
@@ -88,13 +85,12 @@ func GetSubject(searchColumn, searchValue string) (*models.Subject, error) {
 	downvotes,
 	publishDate,
 	lastPostDate,
-	allPosts,
 	owner
 FROM subject WHERE
 %s = '%s';`, searchColumn, searchValue))
 	subject := new(models.Subject)
 	for rows.Next() {
-		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.AllPosts, &subject.Owner)
+		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.Owner)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -115,13 +111,12 @@ func GetAllSubject() (*[]models.Subject, error) {
 	downvotes,
 	publishDate,
 	lastPostDate,
-	allPosts,
 	owner
 FROM subject;`)
 	subjectTable := new([]models.Subject)
 	for rows.Next() {
 		subject := new(models.Subject)
-		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.AllPosts, &subject.Owner)
+		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.Owner)
 		subject.Image, err = hex.DecodeString(str)
 		*subjectTable = append(*subjectTable, *subject)
 		if err != nil {
@@ -142,9 +137,8 @@ func PostSubject(subject models.Subject, searchColumn, searchValue string) error
 		downvotes = '%s',
 		publishDate = '%s',
 		lastPostDate = '%s',
-		allPosts = '%s',
 		owner = '%s'
-  WHERE %s = '%s';`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.AllPosts, subject.Owner, searchColumn, searchValue))
+  WHERE %s = '%s';`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner, searchColumn, searchValue))
 	return err
 }
 
@@ -167,11 +161,27 @@ func DropSubjectTable() error {
 func GetSubjectLastUpdate() (*[]models.Subject, error) {
 	// SELECT id,title,	description,nsfw,image,tags,upvotes,downvotes,publishDate,lastPostDate,	allPosts,owner FROM subject ORDER BY lastPostDate desc
 	var str string
-	rows, err := forumDatabase.QuerryData(`SELECT id,title,	description,nsfw,image,tags,upvotes,downvotes,publishDate,lastPostDate,	allPosts,owner FROM subject ORDER BY lastPostDate desc;`)
+	rows, err := forumDatabase.QuerryData(`SELECT id,title,	description,nsfw,image,tags,upvotes,downvotes,publishDate,lastPostDate,owner FROM subject ORDER BY lastPostDate desc;`)
 	subjectTable := new([]models.Subject)
 	for rows.Next() {
 		subject := new(models.Subject)
-		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.AllPosts, &subject.Owner)
+		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.Owner)
+		subject.Image, err = hex.DecodeString(str)
+		*subjectTable = append(*subjectTable, *subject)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return subjectTable, err
+}
+
+func GetSubjectByUserId(id string) (*[]models.Subject, error) {
+	var str string
+	rows, err := forumDatabase.QuerryData(fmt.Sprintf(`SELECT id,title,	description,nsfw,image,tags,upvotes,downvotes,publishDate,lastPostDate,owner FROM subject where owner = "%s";`, id))
+	subjectTable := new([]models.Subject)
+	for rows.Next() {
+		subject := new(models.Subject)
+		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.Owner)
 		subject.Image, err = hex.DecodeString(str)
 		*subjectTable = append(*subjectTable, *subject)
 		if err != nil {

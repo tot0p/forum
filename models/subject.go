@@ -16,34 +16,30 @@ type Subject struct {
 	DownVotes    string `json:"downvotes"`
 	PublishDate  string `json:"publishdate"`
 	LastPostDate string `json:"lastpostdate"`
-	AllPosts     string `json:"allposts"`
 	Owner        string `json:"owner"`
 }
 
+//Function to convert Hex to Base64
 func (subject *Subject) ToBase64() string {
 	return base64.StdEncoding.EncodeToString(subject.Image)
 }
 
-func (subject *Subject) ConvertTagsTo() []string {
-	return strings.Split(subject.Tags, "#")[1:]
-}
-
+//model for tags in subject
 func (subject *Subject) ConvertTags() []string {
 	return strings.Split(subject.Tags, "#")[1:]
 }
 
+//model for upvotes in subject
 func (subject *Subject) ConvertUpVotes() []string {
 	return strings.Split(subject.UpVotes, "#")[1:]
 }
 
+//model for down in subject
 func (subject *Subject) ConvertDownVotes() []string {
 	return strings.Split(subject.DownVotes, "#")[1:]
 }
 
-func (subject *Subject) ConvertAllPosts() []string {
-	return strings.Split(subject.AllPosts, "#")[1:]
-}
-
+//Function to convert Slice to String
 func (subject *Subject) ConvertSliceToString(a []string) string {
 	return strings.Join(a, "#")
 }

@@ -1,68 +1,190 @@
-<!DOCTYPE HTML>
-<html lang="fr">
+<!DOCTYPE html>
+<html>
 
 <head>
     <meta charset="UTF-8">
-    <title>User Page {{.UserP.Username}}</title>
+    <title>User - {{.User.Username}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/style/main.css" />
     <link rel="stylesheet" type="text/css" href="/style/landing.css" />
+    <link rel="stylesheet" type="text/css" href="/style/profile.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
     <script src="/js/loading.js"></script>
-    <link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64, {{.ProfilePictureBase64}}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64, {{.User.ToBase64}}" />
     <!-- fontawesome -->
     <script src="https://kit.fontawesome.com/5017b7341e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="header">
-        <h1>forum</h1>
-    </div>
-    <div class="boubou2"> 
-        <p class="divProfil">Profil</p>
-    </div>      
-        <div class="boubou">
-            <p class="divChangeProfil">Change profile</p>
-            <p class="div1">Username</p>
-            <p class="divUsername">{{.User.Username}}</p>
-            {{if .User.Title}}
-            <p class="divUsername">  "{{.User.Title}}" {{.User.Username}}</p>
-            {{end}}
-            <p class="div2">LastName</p>
-            <p class="divLastName">{{.User.Bio}}</p>
-            <p class="div3">FirstName</p>
-            <p class="divFirstName">{{.User.FirstName}}</p>
-            <p class="div4">BirthDate</p>
-            <p class="divBirthDate">{{.User.BirthDate}}</p>
-            <p class="div5">Genre</p>
-            <p class="divGenre">
-            {{if eq .User.Genre "Male"}}
-                <img src="/img/Emblem_Bronze.png" width="100" height="100"/>
-            {{end}}
-            {{if eq .User.Genre "Female"}}
-                <img src="/img/Emblem_Bronze.png" width="100" height="100" padding-bottom="70%"/>
-            {{end}}
-            {{if eq .User.Genre "Other"}}
-                <img src="/img/Emblem_Bronze.png" width="50" height="50"/>
-            {{end}}
-            </p>
-            <p class="div6">SummonerName</p>
-            <p class="divRiotId">{{.SummonerName}}</p>
-            {{if .User.ProfilePicture}}
-            <p class="div7">ProfilePicture</p>
-            <div class="divProfilePicture">
-                <img src="data:image/png;base64, {{.ProfilePictureBase64}}" style="width:20%"/>
-            {{end}}
-            </div class = divSoloQueue>
-            {{range $classement := .UserRiot}}
-                <p class="divSoloQueue">{{$classement.QueueType}}
-                    <p>{{$classement.Rank}} {{$classement.Tier}}</p>
-                    <img src="/img/Emblem_{{$classement.Tier}}.png" width="50" height="50"/>
-                </p>
-            {{end}}
+    <div class="page">
+        <div class="profile_landing_layout" style="grid-template-rows: 100px 3000px 100px;">
+            <div class="nav_container">
+                <nav class="navbar">
+                    <div class="shortcuts_container">
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-magnifying-glass"></i> Explore Subjects</a>
+                        </div>
+                        {{if .Connected}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/profile"> <i class="fa-solid fa-user"></i> My Profile</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                        </div>
+                        {{else}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
+                        </div>
+                        {{end}}
+                    </div>
+                    <div class="profile">
+                        {{if .Connected}}
+                        <div class="profile_picture_container">
+                            <a href="/profile">
+                                <img class="profile_picture" src="data:image/png;base64, {{.UserOrigin.ToBase64}}" />
+                            </a>
+                        </div>
+                        <div class="username_container">
+                            <p class="username">{{.UserOrigin.Username}}</p>
+                        </div>
+                        {{end}}
+                    </div>
+                </nav>
+            </div>
+            <div class="profile_display_container">
+                <div class="main_profile_container">
+                    <div class="profile_display">
+                        {{if .User.Title}}
+                        <p>Username and Title : "{{.User.Title}}" {{.User.Username}}</p>
+                        {{else}}
+                        <p>Username : {{.User.Username}}</p>
+                        {{end}}
+                    </div>
+                    <div class="profile_display">
+                        <p>Last Name : {{.User.LastName}}</p>
+                    </div>
+                    <div class="profile_display">
+                        <p>First Name : {{.User.FirstName}}</p>
+                    </div>
+                    <div class="profile_display">
+                        <p>Birth Date : {{.User.BirthDate}}</p>
+                    </div>
+                    <div class="profile_display">
+                        {{if eq .User.Genre "Male"}}
+                        <p>Genre : ​ </p> <i class="fa-solid fa-mars"></i> {{end}} {{if eq .User.Genre "Female"}}
+                        <p>Genre : ​ </p> <i class="fa-solid fa-venus"></i> {{end}} {{if eq .User.Genre "Other"}}
+                        <p>Genre : ​ </p> <i class="fa-solid fa-genderless"></i> {{end}}
+                    </div>
+                    <div class="profile_display">
+                        <p>Summoner Name : {{.SummonerName}}</p>
+                    </div>
+                    <div class="profile_display">
+                        <p>Profile Picture</p>
+                        <img src="data:image/png;base64, {{.User.ToBase64}}" style="width:100px" />
+                    </div>
+                    {{if .Ranked}}
+                    <div class="profile_display" style="justify-content: space-evenly;text-align: center;">
+                        {{range $classement := .UserRiot}}
+                        <div>
+                            <p>{{if eq $classement.QueueType "RANKED_SOLO_5x5"}}SOLO{{else}}FLEX{{end}} ​
+                                <p>{{$classement.Rank}} {{$classement.Tier}}</p>
+                                <img src="/img/Emblem_{{$classement.Tier}}.png" width="100" height="100" />
+                            </p>
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                <p class="text" style="grid-area: 3 / 1 / 3 / 4;">{{.User.Username}}'s Posts</p>
+                <div class="post2_container">
+                    <div class="subject_post_container">
+                        <div class="subject_container">
+                            {{range $Post := .Posts}}
+                            <div class="post" onclick="window.location.href = '/post/{{$Post.Id}}';">
+                                <div class="post_title">
+                                    {{$Post.Title}} {{if eq $Post.NSFW 1}}
+                                    <div style="margin-left: 15px;margin-top: 5px;">
+                                        <span class="fa-layers fa-lg">
+                                            <i class="fas fa-circle"></i>
+                                            <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-8" style="font-weight:900">18+</span>
+                                        </span>
+                                    </div>
+                                    {{end}}
+                                </div>
+                                <div class="post_image_container">
+                                    <img class="post_image" src="data:image/png;base64, {{$Post.ToBase64}}" />
+                                </div>
+                                <div class="post_tags">
+                                    Tags : {{$Post.Tags}}
+                                </div>
+                                <div class="post_author">
+                                    Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Post.Owner}}"> @{{$.GetOwnerUsername $Post.Owner}}</a>
+                                </div>
+                                <div class="post_last_update">
+                                    Published : {{$Post.PublishDate}}
+                                </div>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+                <p class="text" style="grid-area: 5 / 1 / 5 / 4;">{{.User.Username}}'s Subjects</p>
+                <div class="post3_container">
+                    <div class="grid">
+                        {{range $Subject := .Subjects}}
+                        <div class="subject" onclick="window.location.href = '/subject/{{$Subject.Id}}';">
+                            <div class="subject_title">
+                                {{$Subject.Title}} {{if eq $Subject.NSFW 1}}
+                                <div style="margin-left: 15px;margin-top: 5px;">
+                                    <span class="fa-layers fa-lg">
+                            <i class="fas fa-circle"></i>
+                            <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-8" style="font-weight:900">18+</span>
+                                    </span>
+                                </div>
+                                {{end}}
+                            </div>
+                            <div class="subject_image_container">
+                                <img class="subject_image" src="data:image/png;base64, {{$Subject.ToBase64}}" />
+                            </div>
+                            <div class="subject_tags">
+                                Tags : {{$Subject.Tags}}
+                            </div>
+                            <div class="subject_author">
+                                Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Subject.Owner}}"> @{{$.GetOwnerUsername $Subject.Owner}}</a>
+                            </div>
+                            <div class="subject_last_update">
+                                Last Update : {{$Subject.LastPostDate}}
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer_container">
+                <div>
+                    <a class="shortcuts_text" href="/contact">Contact Us</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/license">Website License</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/GTU">General Terms of Use</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/privacy">Privacy Policy</a>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
     </div>
 </body>
 

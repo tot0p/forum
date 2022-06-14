@@ -87,15 +87,8 @@ func InsertPostTable(post models.Post) error {
 	if err != nil {
 		return err
 	}
-	postNew, err := GetPost("title", post.Title)
-	if err != nil {
-		return err
-	}
-	posts := subjToUpdate.ConvertAllPosts()
-	posts = append(posts, postNew.Id)
 	timeNow := time.Now().Format("2006-01-02 15:04:05")
 	subjToUpdate.LastPostDate = timeNow
-	subjToUpdate.AllPosts = subjToUpdate.ConvertSliceToString(posts)
 	err = PostSubject(*subjToUpdate, "id", subjToUpdate.Id)
 	if err != nil {
 		return err
@@ -195,6 +188,38 @@ func GetLastPost() (*[]models.Post, error) {
 	//SELECT id,title,description,image,tags,comments,nsfw,publishDate,	upvotes,	downvotes,	owner,	parent FROM post ORDER BY publishDate desc
 	var str string
 	rows, err := forumDatabase.QuerryData(`SELECT id,title,description,image,tags,comments,nsfw,publishDate,	upvotes,	downvotes,	owner,	parent FROM post ORDER BY publishDate desc;`)
+	postTable := new([]models.Post)
+	for rows.Next() {
+		post := new(models.Post)
+		rows.Scan(&post.Id, &post.Title, &post.Description, &str, &post.Tags, &post.Comments, &post.NSFW, &post.PublishDate, &post.UpVotes, &post.DownVotes, &post.Owner, &post.Parent)
+		post.Image, err = hex.DecodeString(str)
+		*postTable = append(*postTable, *post)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return postTable, err
+}
+
+func GetPostsBySubjectId(id string) (*[]models.Post, error) {
+	var str string
+	rows, err := forumDatabase.QuerryData(fmt.Sprintf(`SELECT id,title,description,image,tags,comments,nsfw,publishDate,	upvotes,	downvotes,	owner,	parent FROM post where parent = %s;`, id))
+	postTable := new([]models.Post)
+	for rows.Next() {
+		post := new(models.Post)
+		rows.Scan(&post.Id, &post.Title, &post.Description, &str, &post.Tags, &post.Comments, &post.NSFW, &post.PublishDate, &post.UpVotes, &post.DownVotes, &post.Owner, &post.Parent)
+		post.Image, err = hex.DecodeString(str)
+		*postTable = append(*postTable, *post)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return postTable, err
+}
+
+func GetPostsByUserId(id string) (*[]models.Post, error) {
+	var str string
+	rows, err := forumDatabase.QuerryData(fmt.Sprintf(`SELECT id,title,description,image,tags,comments,nsfw,publishDate,	upvotes,	downvotes,	owner,	parent FROM post where owner = "%s";`, id))
 	postTable := new([]models.Post)
 	for rows.Next() {
 		post := new(models.Post)

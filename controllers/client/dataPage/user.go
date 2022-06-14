@@ -20,6 +20,7 @@ type UserDataPage struct {
 	User []models.User
 }
 
+//Funtion to create a data page
 func (i *UserDataPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	i.User = []models.User{}
 	url := os.Getenv("url_api") + "users"
@@ -53,7 +54,7 @@ func (i *UserDataPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[s
 		cam[elem.Genre]++
 	}
 	w.WriteHeader(http.StatusOK)
-	rep, err := CamanbertGenerator(cam, "Genre", "chart_div")
+	rep, err := CamenbertGenerator(cam, "Genre", "chart_div")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -65,7 +66,7 @@ func (i *UserDataPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[s
 			cam["NonPremium"]++
 		}
 	}
-	rep2, err := CamanbertGenerator(cam, "Premium", "zaoaz")
+	rep2, err := CamenbertGenerator(cam, "Premium", "zaoaz")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,7 +77,8 @@ func (i *UserDataPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[s
 	// connection_journaliere
 }
 
-func CamanbertGenerator(data map[string]int, title string, id string) (string, error) {
+//Function to create a camenbert
+func CamenbertGenerator(data map[string]int, title string, id string) (string, error) {
 	res := "["
 	first := true
 	for i, f := range data {

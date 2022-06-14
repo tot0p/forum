@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-//Get the number of users created
+//Function to get the number of user on the website
 func GetNBUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	userById, err := repository.Count("user")
 	if err != nil {
@@ -23,7 +23,7 @@ func GetNBUser(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(user)
 }
 
-//Get the number of subjects created
+//Function to get the number of subject created
 func GetNBSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	subjectById, err := repository.Count("subject")
 	if err != nil {
@@ -38,7 +38,7 @@ func GetNBSubject(paramsURL map[string]string, params map[string]interface{}, w 
 	w.Write(subject)
 }
 
-//Get the number of posts created
+//Function to get the number of post created
 func GetNBPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	postById, err := repository.Count("post")
 	if err != nil {
@@ -53,7 +53,7 @@ func GetNBPost(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(post)
 }
 
-//Get all counters
+//Function to get all the counter on the website
 func GetCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	counters := models.AllCount{}
 	count, err := repository.Count("post")

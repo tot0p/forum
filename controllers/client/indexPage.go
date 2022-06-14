@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"forum/models"
 	"forum/tools/request"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"text/template"
 )
 
 var CurrentFolder = "src/html/"
@@ -25,6 +25,7 @@ type Page struct {
 	Stats                models.AllCount
 }
 
+//Function to get the Username of the actual session
 func (i Page) GetOwnerUsername(UUID string) string {
 	if _, ok := i.Usernames[UUID]; ok {
 		return i.Usernames[UUID]
@@ -46,6 +47,7 @@ func (i Page) GetOwnerUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
+//Function to create the owner session page
 func (i *Page) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	i.Usernames = make(map[string]string)
 	cookie, err := r.Cookie("SID")

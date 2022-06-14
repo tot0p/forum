@@ -1,9 +1,11 @@
 package request
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"forum/models"
+	"forum/tools/authorization"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -69,4 +71,64 @@ func GetCommentById(id string) (models.Comment, error) {
 		return models.Comment{}, err
 	}
 	return Comment, nil
+}
+
+func PostComment(comment models.Comment, SID string) error {
+	url := os.Getenv("url_api") + "comment"
+	client := &http.Client{}
+	//modifiedSubject := make(map[string]interface{})
+	commentBytes, err := json.Marshal(comment)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", url, bytes.NewReader(commentBytes))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("content-Type", "application/json")
+	authorization.SetAuthorizationBearer(SID, req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	var jsonReqBody map[string]interface{}
+	json.Unmarshal(reqBody, &jsonReqBody)
+	if _, ok := jsonReqBody["err"]; ok {
+		if _, ok := jsonReqBody["msg"]; ok {
+			return errors.New(jsonReqBody["msg"].(string))
+		}
+		return errors.New(jsonReqBody["err"].(string))
+	}
+	err = json.Unmarshal(reqBody, &comment)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetCommentsByPostId(id string) ([]models.Comment, error) {
+	AllComments := []models.Comment{}
+	url := os.Getenv("url_api") + "comment/GetCommentByPost/" + id
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(reqBody, &AllComments)
+	if err != nil {
+		return nil, err
+	}
+	return AllComments, nil
 }

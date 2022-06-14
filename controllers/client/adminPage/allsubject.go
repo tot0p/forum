@@ -3,8 +3,8 @@ package adminpage
 import (
 	"forum/models"
 	"forum/tools/request"
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 type AllSubject struct {
@@ -14,6 +14,7 @@ type AllSubject struct {
 	User        models.User
 }
 
+//Method linked to the page contain all the subjects
 func (a *AllSubject) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	a.AllSubjects = []models.Subject{}
 	cookie, err := r.Cookie("SID")

@@ -15,6 +15,7 @@ type SubjectExplorerPage struct {
 	Connected            bool
 }
 
+//Function to create a page to explore the subjects
 func (p *SubjectExplorerPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {

@@ -152,3 +152,27 @@ func DeleteSubjectById(id, SID string) error {
 	}
 	return nil
 }
+
+func GetSubjectByUserId(id string) ([]models.Subject, error) {
+	url := os.Getenv("url_api") + "subject/GetSubjectsByUser/" + id
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	var jsonReqBody = []models.Subject{}
+	err = json.Unmarshal(reqBody, &jsonReqBody)
+	if err != nil {
+		return nil, err
+	}
+	return jsonReqBody, nil
+}

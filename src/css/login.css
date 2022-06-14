@@ -6,7 +6,6 @@ html {
     background-attachment: fixed;
 }
 
-
 @media screen and (min-width:980px) {
     .card {
         margin-top: 5%;
@@ -31,7 +30,9 @@ html {
         overflow-wrap: break-word;
     }
 }
-@media screen and (max-width:979px){   /* Pour les moyen et petit appareils style tablette, téléphone */
+
+@media screen and (max-width:979px) {
+    /* Pour les moyen et petit appareils style tablette, téléphone */
     .card {
         margin-top: 5%;
         margin-left: 10%;
@@ -57,7 +58,6 @@ html {
     }
 }
 
-
 .card-header {
     text-align: center;
     color: white
@@ -79,10 +79,8 @@ html {
     box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
-
 .submit:hover {
     background-color: #293a9993;
     /* Green */
     color: white;
 }
-

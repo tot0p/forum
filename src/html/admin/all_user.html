@@ -5,42 +5,55 @@
     <meta charset="UTF-8">
     <title>All_user</title>
     <link rel="stylesheet" type="text/css" href="style/register.css" />
-</head> 
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+</head>
 
 <body>
-    <div> 
+    <div>
         <table>
             <thead>
                 <tr>
+                    <a href="/">Index</a>
+                    <a href="/admin/subjects">Subject Management</a>
+                    <a href="/admin/posts">Post Management</a>
                     <th>UUID</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Image</th>
                     <th>FirstName</th>
                     <th>LastName</th>
                     <th>RiotId</th>
                     <th>BirthDate</th>
-                    <th>genre</th>
-                    <th>role</th>
-                    <th>premium</th>
+                    <th>Genre</th>
+                    <th>Role</th>
+                    <th>Premium</th>
+                    <th>ViewUser</th>
+                    <th>DeleteUser</th>
                 </tr>
             </thead>
             <tbody>
-                {{range $User := .AllUsers}}
+                {{range $User := .AllUsers}} {{if ne $User.UUID "0"}}
                 <tr>
                     <td>{{$User.UUID}}</td>
                     <td>{{$User.Username}}</td>
                     <td>{{$User.Email}}</td>
+                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$User.ToBase64}}" /></td>
                     <td>{{$User.FirstName}}</td>
                     <td>{{$User.LastName}}</td>
                     <td>{{$User.RiotId}}</td>
                     <td>{{$User.BirthDate}}</td>
                     <td>{{$User.Genre}}</td>
                     <td>{{$User.Role}}</td>
-                    <td>{{$User.Premium}}</td>                
+                    <td>{{$User.Premium}}</td>
+                    <th><a href="/user/{{$User.Username}}">View</a></th>
+                    <form action="/admin" method="post">
+                        <th><input type="submit" id="id" name="id" value="{{$User.UUID}}" /></th>
+                    </form>
                 </tr>
-                {{end}}
+                {{end}} {{end}}
             </tbody>
         </table>
     </div>
 </body>
-</html> 
+
+</html>

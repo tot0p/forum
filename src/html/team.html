@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Team</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/style/main.css" />
+    <link rel="stylesheet" type="text/css" href="/style/landing.css" />
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/5017b7341e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Title</th>
+                    <th>LastName</th>
+                    <th>FirstName</th>
+                    <th>BirthDate</th>
+                    <th>Genre</th>
+                    <th>ProfilePicture</th>
+                    <th>SummonerName</th>
+                    <th>Rank SoloQ</th>
+                    <th>Rank Flex</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $Team := .AllTeam}}
+                <tr>
+                    <td>{{$Team.Username}}</td>
+                    <td>{{$Team.Title}}</td>
+                    <td>{{$Team.LastName}}</td>
+                    <td>{{$Team.FirstName}}</td>
+                    <td>{{$Team.BirthDate}}</td>
+                    <td>{{$Team.Genre}}</td>
+                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$Team.ToBase64}}" /></td>
+                    <td>{{$.GetSummonerName $Team}}</td>
+                    {{range $classement := $.GetRank $Team}}
+                    <td>
+                        <p>{{$classement.Tier}} {{$classement.Rank}}</p>
+                        <img src="/img/Emblem_{{$classement.Tier}}.png" width="50" height="50" />
+                        </p>
+                    </td>
+                    {{end}}
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

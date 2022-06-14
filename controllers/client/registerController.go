@@ -7,11 +7,11 @@ import (
 	"forum/tools"
 	"forum/tools/riot"
 	"forum/tools/verif"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 )
 
 type RegisterPage struct {
@@ -19,6 +19,7 @@ type RegisterPage struct {
 	Error string
 }
 
+//Function to be register on the api
 func (p *RegisterPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
@@ -75,7 +76,7 @@ func (p *RegisterPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[s
 					if err != nil {
 						log.Fatal(err)
 					} else {
-						http.Redirect(w, r, "/login", http.StatusPermanentRedirect)
+						http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 					}
 				}
 			}

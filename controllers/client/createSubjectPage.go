@@ -18,6 +18,7 @@ type CreateSubjectPage struct {
 	Error string
 }
 
+//Function to create page for a subject
 func (p *CreateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form

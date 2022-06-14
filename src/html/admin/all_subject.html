@@ -6,13 +6,14 @@
     <title>All_subject</title>
     <link rel="stylesheet" type="text/css" href="/style/register.css" />
     <link rel="stylesheet" type="text/css" href="/style/subject.css" />
-</head> 
+</head>
 
 <body>
-    <div> 
+    <div>
         <table>
             <thead>
                 <tr>
+                    <a href="/admin">User Management</a>
                     <th>Id</th>
                     <th>Title</th>
                     <th>NSFW</th>
@@ -20,10 +21,10 @@
                     <th>Tags</th>
                     <th>PublishDate</th>
                     <th>LastPostDate</th>
-                    <th>AllPosts</th>
                     <th>Owner</th>
                     <th>ViewSubject</th>
                     <th>DeleteSubject</th>
+                    <th>UpdateSubject</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,20 +33,21 @@
                     <td>{{$Subject.Id}}</td>
                     <td>{{$Subject.Title}}</td>
                     <td>{{$Subject.NSFW}}</td>
-                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$Subject.ToBase64}}"/></td>
+                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$Subject.ToBase64}}" /></td>
                     <td>{{$Subject.Tags}}</td>
                     <td>{{$Subject.PublishDate}}</td>
                     <td>{{$Subject.LastPostDate}}</td>
-                    <td>{{$Subject.AllPosts}}</td>
                     <td>{{$Subject.Owner}}</td>
                     <th><a href="/subject/{{$Subject.Id}}">View</a></th>
-                    <form action ="/admin/subjects" method="post">
-                        <th><input type="submit" id="id" name="id" value="{{$Subject.Id}}"/></th>
+                    <form action="/admin/subjects" method="post">
+                        <th><input type="submit" id="id" name="id" value="{{$Subject.Id}}" /></th>
                     </form>
+                    <th><a href="/update-subject/{{$Subject.Id}}">Update</a></th>
                 </tr>
                 {{end}}
             </tbody>
         </table>
     </div>
 </body>
-</html> 
+
+</html>

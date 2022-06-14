@@ -5,3 +5,5 @@ type Ip struct {
 	Ip   string `json:"ip"`
 	Date string `json:"date"`
 }
+
+//model for ip

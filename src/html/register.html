@@ -8,24 +8,25 @@
     <link rel="stylesheet" type="text/css" href="style/login.css" />
     <script src="js/register.js"></script>
 </head>
+
 <body>
-    <div class ="page card-header">
+    <div class="page card-header">
         <h3>Register</h3>
-        <form class="Login" action ="/register" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">  
+        <form class="Login" action="/register" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">
             <label for="name"> Username* :   </label>
             <input type="text" id="name" name="username" required/>
             <label for="mail">E-mail*&nbsp;:</label>
-            <input type="email" id="mail" name="email" required/> 
+            <input type="email" id="mail" name="email" required/>
             <label for="Password"> Password* :   </label>
-            <input type="password" id="password" name="password" required/> 
+            <input type="password" id="password" name="password" required/>
             <label for="ConfirmationPassword"> Confirmation Password* :   </label>
             <input type="password" id="Confirmation_Password" name="Confirmation_Password" required/>
             <label for="Firstname">Firstname* :</label>
-            <input id="text" name="firstname"required/>
+            <input id="text" name="firstname" required/>
             <label for="LastName">LastName* :</label>
-            <input type="text" id="LastName" name="lastname"required/>
+            <input type="text" id="LastName" name="lastname" required/>
             <label for="BirthDate">Birthdate* :</label>
-            <input type = "date" id="BirthDate" name="birthdate"required/>
+            <input type="date" id="BirthDate" name="birthdate" required/>
             <label for="Gender">Gender* :</label>
             <select id="Gender" name="genre" required>
                 <option value="Male">Male</option>
@@ -33,12 +34,12 @@
                 <option value="Other">Other</option>
             </select>
             <label for="RiotId">LoL Account :</label>
-            <input type="text" id="riotid" name="riotid"/>
+            <input type="text" id="riotid" name="riotid" />
             <label for="Bio">Bio :</label>
             <textarea id="Bio" name="bio"></textarea>
             <label for="profilepicture">Profile picture :</label>
             <input type="file" onchange="ppUpload()" id="profilepicture" name="profilepicture" accept="image/png, image/jpeg">
-            <p class= "button">
+            <p class="button">
                 <button id="clickable" disabled>Create Account</button>
             </p>
             <p class="invalid" id="error">Password must contain both lowercase & uppercase letter, a number, a special character</p>

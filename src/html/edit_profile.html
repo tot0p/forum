@@ -12,37 +12,37 @@
 <body>
     <div class="page card-header">
         <h3>Edit Profile</h1>
-        <form class="Login" action ="/update-profile" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">
-            <label for="name"> Username :   </label>
-            <input type="text" id="name" name="username" value="{{.User.Username}}"/>
-            <label for="mail">E-mail&nbsp;:</label>
-            <input type="email" id="mail" name="email" value="{{.User.Email}}"/>
-            <label for="password"> Password :   </label>
-            <input type="password" id="password" name="password" autocomplete="new-password"/> 
-            <label for="ConfirmationPassword"> Confirmation Password :   </label>
-            <input type="password" id="Confirmation_Password" name="Confirmation_Password" autocomplete="new-password"/>
-            <label for="Firstname">Firstname :</label>
-            <input id="text" name="firstname" value="{{.User.FirstName}}"/>
-            <label for="LastName">LastName :</label>
-            <input type="text" id="LastName" name="lastname" value="{{.User.LastName}}"/>
-            <label for="BirthDate">Birthdate :</label>
-            <input type="text" id="BirthDate" name="birthdate" onfocus="(this.type='date')" value="{{.User.BirthDate}}"/>
-            <label for="Gender">Gender :</label>
-            <select id="Gender" name="genre">
+            <form class="Login" action="/update-profile" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">
+                <label for="name"> Username :   </label>
+                <input type="text" id="name" name="username" value="{{.User.Username}}" />
+                <label for="mail">E-mail&nbsp;:</label>
+                <input type="email" id="mail" name="email" value="{{.User.Email}}" />
+                <label for="password"> Password :   </label>
+                <input type="password" id="password" name="password" autocomplete="new-password" />
+                <label for="ConfirmationPassword"> Confirmation Password :   </label>
+                <input type="password" id="Confirmation_Password" name="Confirmation_Password" autocomplete="new-password" />
+                <label for="Firstname">Firstname :</label>
+                <input id="text" name="firstname" value="{{.User.FirstName}}" />
+                <label for="LastName">LastName :</label>
+                <input type="text" id="LastName" name="lastname" value="{{.User.LastName}}" />
+                <label for="BirthDate">Birthdate :</label>
+                <input type="text" id="BirthDate" name="birthdate" onfocus="(this.type='date')" value="{{.User.BirthDate}}" />
+                <label for="Gender">Gender :</label>
+                <select id="Gender" name="genre">
                 <option value="Male" {{if eq .User.Genre "Male"}} selected {{end}} >Male</option>
                 <option value="Female" {{if eq .User.Genre "Female"}} selected {{end}}>Female</option>
                 <option value="Other" {{if eq .User.Genre "Other"}} selected {{end}} >Other</option>                
             </select>
-            <label for="RiotId">LoL Account :</label>
-            <input type="text" id="riotid" name="riotid" value="{{.SummonerName}}"/>
-            <label for="Bio">Bio :</label>
-            <input type="textarea" id="Bio" name="bio" value="{{.User.Bio}}"/>
-            <label for="profilepicture">Profile picture :</label>
-            <input type="file" onchange="ppUpload()" id="profilepicture" name="profilepicture" accept="image/png, image/jpeg">
-            <p class= "button">
-                <button id="clickable">Edit Account</button>
-            </p>
-        </form>
+                <label for="RiotId">LoL Account :</label>
+                <input type="text" id="riotid" name="riotid" value="{{.SummonerName}}" />
+                <label for="Bio">Bio :</label>
+                <input type="textarea" id="Bio" name="bio" value="{{.User.Bio}}" />
+                <label for="profilepicture">Profile picture :</label>
+                <input type="file" onchange="ppUpload()" id="profilepicture" name="profilepicture" accept="image/png, image/jpeg">
+                <p class="button">
+                    <button id="clickable">Edit Account</button>
+                </p>
+            </form>
     </div>
 </body>
 

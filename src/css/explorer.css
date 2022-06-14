@@ -7,52 +7,52 @@
 }
 
 .div1 {
-    grid-area: 3 / 1 / 6 / 1; 
+    grid-area: 3 / 1 / 6 / 1;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
     padding-left: 5%;
 }
 
 .div11 {
-    grid-area: 3 / 3 / 6 / 4; 
+    grid-area: 3 / 3 / 6 / 4;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
 .div2 {
-    grid-area:9 / 1 / 12 / 1; 
+    grid-area: 9 / 1 / 12 / 1;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
     padding-left: 5%;
 }
 
 .div12 {
-    grid-area: 9 / 3 / 12 / 4; 
+    grid-area: 9 / 3 / 12 / 4;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
 .div3 {
-    grid-area: 15 / 1 / 18 / 1; 
+    grid-area: 15 / 1 / 18 / 1;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
     padding-left: 5%;
 }
 
 .div13 {
-    grid-area: 15 / 3 / 18 / 4; 
+    grid-area: 15 / 3 / 18 / 4;
     text-align: center;
     background-color: #23B836;
     border-radius: 5px 10px 0 5px;
-    box-shadow: 10px 5px 10px 2px rgba(0,0,0,0.6); 
+    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
 }

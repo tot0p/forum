@@ -6,18 +6,18 @@
     <title>Create Post</title>
     <link rel="stylesheet" type="text/css" href="style/register.css" />
     <link rel="stylesheet" type="text/css" href="style/login.css" />
-</head> 
+</head>
 
 <body>
-    <div class ="page card-header">
-        <h3>Post</h3> 
-        <form class="Login" action ="/post" method="post" enctype="multipart/form-data">
+    <div class="page card-header">
+        <h3>Post</h3>
+        <form class="Login" action="/post" method="post" enctype="multipart/form-data">
             <label for="title"> Title* :   </label>
             <input type="text" id="title" name="title" required/>
             <label for="description"> Description* :   </label>
             <input type="text" id="description" name="description" required/>
             <label for="nsfw"> NSFW :   </label>
-            <input type="checkbox" id="nsfw" name="nsfw"/>
+            <input type="checkbox" id="nsfw" name="nsfw" />
             <label for="image"> Image :   </label>
             <input type="file" onchange="ppUpload()" id="image" name="image" accept="image/png, image/jpeg">
             <label for="tags"> Tags* :   </label>
@@ -34,4 +34,5 @@
         </form>
     </div>
 </body>
-</html> 
+
+</html>

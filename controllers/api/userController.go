@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-//Change auth token from UUID to SID
+//Function to get all Users
 func GetAllUsers(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -54,7 +54,7 @@ func GetAllUsers(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(users)
 }
 
-//Search an user
+//Function to Search an User
 func SearchUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allUsers, err := repository.GetAllUser()
 	if err != nil {
@@ -81,7 +81,7 @@ func SearchUser(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write(users)
 }
 
-//Get an user by his Id
+//Function to get an user by his id
 func GetUserById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	userById, err := repository.GetUser("UUID", paramsURL["id"])
 	if err != nil {
@@ -97,7 +97,7 @@ func GetUserById(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(user)
 }
 
-//Get an user by his username
+//Function to get an user by is Username
 func GetUserByUsername(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	username, err := url.QueryUnescape(paramsURL["username"])
 	if err != nil {
@@ -118,7 +118,7 @@ func GetUserByUsername(paramsURL map[string]string, params map[string]interface{
 	w.Write(user)
 }
 
-//Create an user
+//Function to create
 func CreateUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	var (
 		oauth, password string
@@ -186,7 +186,7 @@ func DeleteUserById(paramsURL map[string]string, params map[string]interface{}, 
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Modify an user by his Id
+//Function to modify an user using by his id
 func PutUserById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -297,7 +297,7 @@ func PutUserById(paramsURL map[string]string, params map[string]interface{}, w h
 	}
 }
 
-//Get the username of an user
+//Function to get an user Username
 func GetUserUsername(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	user := make(map[string]string)
 	if paramsURL["id"] == "" {
@@ -313,7 +313,7 @@ func GetUserUsername(paramsURL map[string]string, params map[string]interface{},
 	w.Write(username)
 }
 
-//Get your user
+//Function to get your user
 func GetUserMe(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {

@@ -19,6 +19,7 @@ type UpdateSubjectPage struct {
 	ProfilePictureBase64 string
 }
 
+//Function to create a page on which you can update a subject
 func (p *UpdateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {

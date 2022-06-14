@@ -3,8 +3,8 @@ package adminpage
 import (
 	"forum/models"
 	"forum/tools/request"
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 var CurrentFolder = "src/html/admin/"
@@ -16,6 +16,7 @@ type AllUser struct {
 	User      models.User
 }
 
+//Method linked to the page contain all the Users
 func (a *AllUser) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	a.AllUsers = []models.User{}
 	cookie, err := r.Cookie("SID")
@@ -34,7 +35,7 @@ func (a *AllUser) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string
 		return
 	}
 	if r.Method == "POST" {
-		err := request.DeleteSubjectById(r.PostFormValue("id"), cookie.Value)
+		err := request.DeleteUserById(r.PostFormValue("id"), cookie.Value)
 		if err != nil {
 			w.Write([]byte("{\"err\":\"403\",\"msg\":\"" + err.Error() + "\"}"))
 			return

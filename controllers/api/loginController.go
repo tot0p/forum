@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"forum/models"
 	"forum/repository"
+	"forum/tools/authorization"
 	"forum/tools/session"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-//To log an user
+//Function to login an user on the website
 func UserLogin(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	if params["username"] == nil || params["password"] == nil {
 		w.WriteHeader(500)
@@ -48,7 +49,7 @@ func UserLogin(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(rep)
 }
 
-//Get the number of user connected
+//Function to get the number of user connected on the website
 func GetNBUserConnected(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	count, err := json.Marshal(models.Count{Nb: session.GlobalSessions.GetNBSession()})
 	if err != nil {
@@ -57,4 +58,19 @@ func GetNBUserConnected(paramsURL map[string]string, params map[string]interface
 		return
 	}
 	w.Write(count)
+}
+
+//Function to stop a session
+func DeleteSession(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	if !session.GlobalSessions.SessionExist(sess.SessionID()) {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Session Invalid\"}"))
+		return
+	}
+	session.GlobalSessions.SessionDestroy(sess.SessionID())
+	w.Write([]byte("{\"msg\":\"success\"}"))
 }

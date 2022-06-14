@@ -64,16 +64,8 @@ func (manager *SessionManager) SessionExist(SID string) bool {
 	}
 }
 
-func (manager *SessionManager) SessionDestroy(w http.ResponseWriter, r *http.Request) error {
-	cookie, err := r.Cookie(manager.CookieName)
-	if err != nil || cookie.Value == "" {
-		return fmt.Errorf("Cant Delete A Nil Session")
-	} else {
-		manager.Provider.SessionDestroy(cookie.Value)
-		expiration := time.Now()
-		cookie := http.Cookie{Name: manager.CookieName, Path: "/", HttpOnly: true, Expires: expiration, MaxAge: -1}
-		http.SetCookie(w, &cookie)
-	}
+func (manager *SessionManager) SessionDestroy(SID string) error {
+	manager.Provider.SessionDestroy(SID)
 	return nil
 }
 

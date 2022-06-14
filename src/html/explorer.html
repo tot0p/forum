@@ -15,36 +15,33 @@
         <h1>forum</h1>
         {{if .Connected}}
         <div>
-            <a href="https://rickrolled.fr" class = "profil"> {{.User.Username}}</a> 
+            <a href="https://rickrolled.fr" class="profil"> {{.User.Username}}</a>
             <div class="divProfilePicture2">
-                <img class = "pictureProfil2"src="data:image/png;base64, {{.ProfilePictureBase64}}"/>
+                <img class="pictureProfil2" src="data:image/png;base64, {{.ProfilePictureBase64}}" />
             </div>
         </div>
         {{else}}
-        <a href = "/register" class = "Register"> Register </a>
-        {{end}}
+        <a href="/register" class="Register"> Register </a> {{end}}
         <div class="dropdown">
             <button class="drop">
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class = "AllElement">
-            <a href = "/"> Acceuil </a>
-            {{if .Connected}}
-            <a href = "/post"> Post </a>
-            <a href = "/subjects"> Subjects </a>
-            <a href = "/profile" >  Profile </a>
-            <a href = "/signout"> Logout </a>
-            {{else}}
-            <a href = "/login"> Login</a>
-            <a href = "/register"> Register </a>    
-            {{end}}
+            <div class="AllElement">
+                <a href="/"> Acceuil </a> {{if .Connected}}
+                <a href="/post"> Post </a>
+                <a href="/subjects"> Subjects </a>
+                <a href="/profile">  Profile </a>
+                <a href="/signout"> Logout </a> {{else}}
+                <a href="/login"> Login</a>
+                <a href="/register"> Register </a> {{end}}
             </div>
         </div>
     </div>
     <div class="Profil center">
-        <h2>Profile</h2>    <!--- IMAGE --> 
+        <h2>Profile</h2>
+        <!--- IMAGE -->
     </div>
-    <div class ="tt"; style="color: rgb(0, 0, 0);">
+    <div class="tt" ; style="color: rgb(0, 0, 0);">
         <p>Change profile</p>
     </div>
     <div class="boubou3 Caseclassical">
@@ -56,4 +53,5 @@
         <div class="div13">pwet</div>
     </div>
 </body>
+
 </html>

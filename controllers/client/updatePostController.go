@@ -18,6 +18,7 @@ type UpdatePostPage struct {
 	Post                 models.Post
 }
 
+//Function to create a page on which you can update a post
 func (p *UpdatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {

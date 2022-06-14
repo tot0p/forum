@@ -25,7 +25,7 @@ func ContainsPost(AllPosts []models.Post, post models.Post) bool {
 	return false
 }
 
-//Get all post
+//Function to get all the post
 func GetAllPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
@@ -41,7 +41,7 @@ func GetAllPost(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write(posts)
 }
 
-//Get random post id
+//Function to get a random id post
 func GetNbRandomPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
@@ -80,7 +80,7 @@ func GetNbRandomPost(paramsURL map[string]string, params map[string]interface{},
 	w.Write(posts)
 }
 
-//Search a post
+//Function to Search a post
 func SearchPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
@@ -107,7 +107,7 @@ func SearchPost(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write(posts)
 }
 
-//Get a post by Id
+//Function to get a post using an id
 func GetPostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	postById, err := repository.GetPost("id", paramsURL["id"])
 	if err != nil {
@@ -122,7 +122,7 @@ func GetPostById(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(post)
 }
 
-//Delete a post by Id
+//Function to delete a post using an id
 func DeletePostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -155,7 +155,7 @@ func DeletePostById(paramsURL map[string]string, params map[string]interface{}, 
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Create a post
+//Function to create a post on the website
 func CreatePost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -196,7 +196,7 @@ func CreatePost(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Modify a post by his Id
+//Function to modify a post using and id
 func PutPostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
@@ -277,7 +277,7 @@ func PutPostById(paramsURL map[string]string, params map[string]interface{}, w h
 	}
 }
 
-//Get the last created post
+//Function to get the last Post Created
 func GetLastPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
 	allPosts, err := repository.GetLastPost()
 	if err != nil {
@@ -301,6 +301,207 @@ func GetLastPost(paramsURL map[string]string, params map[string]interface{}, w h
 	}
 	*allPosts = (*allPosts)[:nb]
 
+	posts, err := json.Marshal(allPosts)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(posts)
+}
+
+//Function to like a post
+func PostLike(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	if !session.GlobalSessions.SessionExist(sess.SessionID()) {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Session Invalid\"}"))
+		return
+	}
+	UserUUID, err := sess.Get("UUID")
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	User, err := repository.GetUser("UUID", UserUUID.(string))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Post, err := repository.GetPost("id", paramsURL["id"])
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	remove := false
+	new := ""
+	upvote := Post.ConvertUpVotes()
+	for _, i := range upvote {
+		if User.UUID == i {
+			remove = true
+		} else {
+			new += "#" + i
+		}
+	}
+	if !remove {
+		new = ""
+		for _, i := range Post.ConvertDownVotes() {
+			if User.UUID == i {
+				remove = true
+			} else {
+				new += "#" + i
+			}
+		}
+		if remove {
+			Post.DownVotes = new
+		}
+		Post.UpVotes += "#" + User.UUID
+	} else {
+		Post.UpVotes = new
+	}
+	repository.PostPost(*Post, "id", paramsURL["id"])
+	w.Write([]byte("{\"msg\":\"success\"}"))
+}
+
+//Function to Hate a post
+func PostHate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	if !session.GlobalSessions.SessionExist(sess.SessionID()) {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Session Invalid\"}"))
+		return
+	}
+	UserUUID, err := sess.Get("UUID")
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	User, err := repository.GetUser("UUID", UserUUID.(string))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Post, err := repository.GetPost("id", paramsURL["id"])
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	remove := false
+	new := ""
+	Downvote := Post.ConvertDownVotes()
+	for _, i := range Downvote {
+		if User.UUID == i {
+			remove = true
+		} else {
+			new += "#" + i
+		}
+	}
+	if !remove {
+		new = ""
+		for _, i := range Post.ConvertUpVotes() {
+			if User.UUID == i {
+				remove = true
+			} else {
+				new += "#" + i
+			}
+		}
+		if remove {
+			Post.UpVotes = new
+		}
+		Post.DownVotes += "#" + User.UUID
+	} else {
+		Post.DownVotes = new
+	}
+	repository.PostPost(*Post, "id", paramsURL["id"])
+	w.Write([]byte("{\"msg\":\"success\"}"))
+}
+
+//Function to count the like and the dislike on a post
+func PostCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	Post, err := repository.GetPost("id", paramsURL["id"])
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Votes := models.Vote{UpVote: strings.Count(Post.UpVotes, "#"), DownVote: strings.Count(Post.DownVotes, "#")}
+	result, err := json.Marshal(Votes)
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(result)
+}
+
+//Function to tell if a use has already liked a post or not
+func UserLikeOrHatePost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	if !session.GlobalSessions.SessionExist(sess.SessionID()) {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Session Invalid\"}"))
+		return
+	}
+	UserUUID, err := sess.Get("UUID")
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	User, err := repository.GetUser("UUID", UserUUID.(string))
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Post, err := repository.GetPost("id", paramsURL["id"])
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	for _, i := range Post.ConvertUpVotes() {
+		if i == User.UUID {
+			w.Write([]byte("{\"downvote\":false,\"upvote\":true}"))
+			return
+		}
+	}
+	for _, i := range Post.ConvertDownVotes() {
+		if i == User.UUID {
+			w.Write([]byte("{\"downvote\":true,\"upvote\":false}"))
+			return
+		}
+	}
+	w.Write([]byte("{\"downvote\":false,\"upvote\":false}"))
+}
+
+func GetPostsBySubjectId(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	id := paramsURL["id"]
+	allPosts, err := repository.GetPostsBySubjectId(id)
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	posts, err := json.Marshal(allPosts)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(posts)
+}
+
+func GetPostsByUserId(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	id := paramsURL["id"]
+	allPosts, err := repository.GetPostsByUserId(id)
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
 	posts, err := json.Marshal(allPosts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

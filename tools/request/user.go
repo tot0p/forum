@@ -193,6 +193,34 @@ func GetUserUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
+func DeleteUserById(id, SID string) error {
+	url := os.Getenv("url_api") + "user/" + id
+	client := &http.Client{}
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("content-Type", "application/json")
+	authorization.SetAuthorizationBearer(SID, req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	var jsonReqBody map[string]interface{}
+	json.Unmarshal(reqBody, &jsonReqBody)
+	if _, ok := jsonReqBody["err"]; ok {
+		if _, ok := jsonReqBody["msg"]; ok {
+			return errors.New(jsonReqBody["msg"].(string))
+		}
+		return errors.New(jsonReqBody["err"].(string))
+	}
+	return nil
+}
+
 // func GetUserById(sess *session.SessionStore) (models.User, error) {
 // 	user := models.User{}
 // 	url := os.Getenv("url_api") + "users"

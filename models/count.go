@@ -12,3 +12,5 @@ type Vote struct {
 	UpVote   int
 	DownVote int
 }
+
+//Struct for count

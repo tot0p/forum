@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All_post</title>
+    <link rel="stylesheet" type="text/css" href="/style/register.css" />
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+</head>
+
+<body>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <a href="/admin">User Management</a>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>NSFW</th>
+                    <th>Image</th>
+                    <th>Tags</th>
+                    <th>PublishDate</th>
+                    <th>Comments</th>
+                    <th>Parent</th>
+                    <th>Owner</th>
+                    <th>ViewPost</th>
+                    <th>DeletePost</th>
+                    <th>UpdatePost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $Post := .AllPosts}}
+                <tr>
+                    <td>{{$Post.Id}}</td>
+                    <td>{{$Post.Title}}</td>
+                    <td>{{$Post.NSFW}}</td>
+                    <td><img class="subject_image" height="64" width="64" src="data:image/png;base64, {{$Post.ToBase64}}" /></td>
+                    <td>{{$Post.Tags}}</td>
+                    <td>{{$Post.PublishDate}}</td>
+                    <td>{{$Post.Comments}}</td>
+                    <td>{{$Post.Parent}}</td>
+                    <td>{{$Post.Owner}}</td>
+                    <th><a href="/post/{{$Post.Id}}">View</a></th>
+                    <form action="/admin/posts" method="post">
+                        <th><input type="submit" id="id" name="id" value="{{$Post.Id}}" /></th>
+                    </form>
+                    <th><a href="/update-post/{{$Post.Id}}">Update</a></th>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

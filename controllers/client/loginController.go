@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"forum/tools"
 	"forum/tools/session"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
-	"text/template"
 )
 
 type LoginPage struct {
@@ -66,7 +66,7 @@ func (p *LoginPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[stri
 				}
 				cookie := http.Cookie{Name: session.GlobalSessions.CookieName, Value: data["SID"], Path: "/", HttpOnly: true, MaxAge: int(session.GlobalSessions.Maxlifetime)}
 				http.SetCookie(w, &cookie)
-				http.Redirect(w, r, "/", http.StatusPermanentRedirect)
+				http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 			}
 		}
 	}

@@ -13,6 +13,10 @@ import (
 type APIController struct {
 }
 
+/*
+The controller for the API, contains the path definition functions linked to the api
+And Parse variable Post or Get and Put
+*/
 func (a *APIController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Path
 	elements := strings.Replace(key, "/api", "", 1)
@@ -22,7 +26,9 @@ func (a *APIController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Header().Set("content-Type", "application/json")
 		fmt.Println("Method :", r.Method, "At :", r.URL.Path, "By :", r.RemoteAddr)
+		des := false
 		switch r.Method {
+		//Function to get some docs with the API
 		case "GET":
 			var params = map[string]interface{}{}
 			for k, elem := range r.URL.Query() {
@@ -31,42 +37,56 @@ func (a *APIController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			//docs
 			//TODO Api docs
 			//user
-			pathDyn("/users", elements, params, api.GetAllUsers, w, r)
-			pathDyn("/user", elements, params, api.GetUserMe, w, r)
-			pathDyn("/username/:id", elements, params, api.GetUserUsername, w, r)
-			pathDyn("/user/:id", elements, params, api.GetUserById, w, r)
-			pathDyn("/user/search/:word", elements, params, api.SearchUser, w, r)
-			pathDyn("/user/by-username/:username", elements, params, api.GetUserByUsername, w, r)
-			//TODO Follow and unFollow
+
+			des = des || pathDyn("/users", elements, params, api.GetAllUsers, w, r)
+			des = des || pathDyn("/user", elements, params, api.GetUserMe, w, r)
+			des = des || pathDyn("/username/:id", elements, params, api.GetUserUsername, w, r)
+			des = des || pathDyn("/user/:id", elements, params, api.GetUserById, w, r)
+			des = des || pathDyn("/user/search/:word", elements, params, api.SearchUser, w, r)
+			des = des || pathDyn("/user/by-username/:username", elements, params, api.GetUserByUsername, w, r)
 			//subject
-			pathDyn("/subjects", elements, params, api.GetAllSubject, w, r)
-			pathDyn("/subject/:id", elements, params, api.GetSubjectById, w, r)
-			pathDyn("/subject/:id/upvote", elements, params, api.SubjectLike, w, r)
-			pathDyn("/subject/:id/count", elements, params, api.SubjectCount, w, r)
-			pathDyn("/subject/:id/downvote", elements, params, api.SubjectHate, w, r)
-			pathDyn("/subject/search/:word", elements, params, api.SearchSubject, w, r)
-			pathDyn("/subject/GetNBSubject/:nb", elements, params, api.GetNbRandomSubject, w, r)
-			pathDyn("/subject/GetLastSubjectUpdate/:nb", elements, params, api.GetSubjectLastUpdate, w, r)
+			des = des || pathDyn("/subjects", elements, params, api.GetAllSubject, w, r)
+			des = des || pathDyn("/subject/:id", elements, params, api.GetSubjectById, w, r)
+			des = des || pathDyn("/subject/:id/upvote", elements, params, api.SubjectLike, w, r)
+			des = des || pathDyn("/subject/:id/count", elements, params, api.SubjectCount, w, r)
+			des = des || pathDyn("/subject/:id/downvote", elements, params, api.SubjectHate, w, r)
+			des = des || pathDyn("/subject/:id/vote", elements, params, api.UserLikeOrHateSubject, w, r)
+			des = des || pathDyn("/subject/search/:word", elements, params, api.SearchSubject, w, r)
+			des = des || pathDyn("/subject/GetNBSubject/:nb", elements, params, api.GetNbRandomSubject, w, r)
+			des = des || pathDyn("/subject/GetLastSubjectUpdate/:nb", elements, params, api.GetSubjectLastUpdate, w, r)
+			des = des || pathDyn("/subject/GetSubjectsByUser/:id", elements, params, api.GetSubjectByUser, w, r)
 
 			//post
-			pathDyn("/posts", elements, params, api.GetAllPost, w, r)
-			pathDyn("/post/:id", elements, params, api.GetPostById, w, r)
-			pathDyn("/post/search/:word", elements, params, api.SearchPost, w, r)
-			pathDyn("/post/GetNBPost/:nb", elements, params, api.GetNbRandomPost, w, r)
-			pathDyn("/post/GetLastPost/:nb", elements, params, api.GetLastPost, w, r)
+			des = des || pathDyn("/posts", elements, params, api.GetAllPost, w, r)
+			des = des || pathDyn("/post/:id", elements, params, api.GetPostById, w, r)
+			des = des || pathDyn("/post/:id/upvote", elements, params, api.PostLike, w, r)
+			des = des || pathDyn("/post/:id/count", elements, params, api.PostCount, w, r)
+			des = des || pathDyn("/post/:id/downvote", elements, params, api.PostHate, w, r)
+			des = des || pathDyn("/post/:id/vote", elements, params, api.UserLikeOrHatePost, w, r)
+			des = des || pathDyn("/post/search/:word", elements, params, api.SearchPost, w, r)
+			des = des || pathDyn("/post/GetNBPost/:nb", elements, params, api.GetNbRandomPost, w, r)
+			des = des || pathDyn("/post/GetLastPost/:nb", elements, params, api.GetLastPost, w, r)
+			des = des || pathDyn("/post/GetPostsBySubject/:id", elements, params, api.GetPostsBySubjectId, w, r)
+			des = des || pathDyn("/post/GetPostsByUser/:id", elements, params, api.GetPostsByUserId, w, r)
 
 			//comment
-			pathDyn("/comments", elements, params, api.GetAllComment, w, r)
-			pathDyn("/comment/:id", elements, params, api.GetCommentById, w, r)
+			des = des || pathDyn("/comments", elements, params, api.GetAllComment, w, r)
+			des = des || pathDyn("/comment/:id", elements, params, api.GetCommentById, w, r)
+			des = des || pathDyn("/comment/:id/upvote", elements, params, api.CommentLike, w, r)
+			des = des || pathDyn("/comment/:id/count", elements, params, api.CommentCount, w, r)
+			des = des || pathDyn("/comment/:id/downvote", elements, params, api.CommentHate, w, r)
+			des = des || pathDyn("/comment/:id/vote", elements, params, api.UserLikeOrHateComment, w, r)
+			des = des || pathDyn("/comment/GetCommentByPost/:id", elements, params, api.GetCommentsByPostId, w, r)
 
 			//count
-			pathDyn("/count", elements, params, api.GetCount, w, r)
-			pathDyn("/count/user", elements, params, api.GetNBUser, w, r)
-			pathDyn("/count/post", elements, params, api.GetNBPost, w, r)
-			pathDyn("/count/subject", elements, params, api.GetNBSubject, w, r)
-			pathDyn("/count/session", elements, params, api.GetNBUserConnected, w, r)
+			des = des || pathDyn("/count", elements, params, api.GetCount, w, r)
+			des = des || pathDyn("/count/user", elements, params, api.GetNBUser, w, r)
+			des = des || pathDyn("/count/post", elements, params, api.GetNBPost, w, r)
+			des = des || pathDyn("/count/subject", elements, params, api.GetNBSubject, w, r)
+			des = des || pathDyn("/count/session", elements, params, api.GetNBUserConnected, w, r)
 
 		case "POST":
+			//Function to post some info into the api
 			reqBody, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				fmt.Println(err)
@@ -89,13 +109,14 @@ func (a *APIController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
-			pathDyn("/user", elements, params, api.CreateUser, w, r)
-			pathDyn("/subject", elements, params, api.CreateSubject, w, r)
-			pathDyn("/post", elements, params, api.CreatePost, w, r)
-			pathDyn("/comment", elements, params, api.CreateComment, w, r)
-			pathDyn("/login", elements, params, api.UserLogin, w, r)
+			des = des || pathDyn("/user", elements, params, api.CreateUser, w, r)
+			des = des || pathDyn("/subject", elements, params, api.CreateSubject, w, r)
+			des = des || pathDyn("/post", elements, params, api.CreatePost, w, r)
+			des = des || pathDyn("/comment", elements, params, api.CreateComment, w, r)
+			des = des || pathDyn("/login", elements, params, api.UserLogin, w, r)
 
 		case "PUT":
+			//Function to modify some info in the api
 			reqBody, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				fmt.Println(err)
@@ -118,24 +139,31 @@ func (a *APIController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
-			pathDyn("/user", elements, params, api.PutUserById, w, r)
-			pathDyn("/subject", elements, params, api.PutSubjectsById, w, r)
-			pathDyn("/post", elements, params, api.PutPostById, w, r)
-			pathDyn("/comment", elements, params, api.PutCommentById, w, r)
+			des = des || pathDyn("/user", elements, params, api.PutUserById, w, r)
+			des = des || pathDyn("/subject", elements, params, api.PutSubjectsById, w, r)
+			des = des || pathDyn("/post", elements, params, api.PutPostById, w, r)
+			des = des || pathDyn("/comment", elements, params, api.PutCommentById, w, r)
 
 		case "DELETE":
-			pathDyn("/user/:id", elements, map[string]interface{}{}, api.DeleteUserById, w, r)
-			pathDyn("/subject/:id", elements, map[string]interface{}{}, api.DeleteSubjectById, w, r)
-			pathDyn("/post/:id", elements, map[string]interface{}{}, api.DeletePostById, w, r)
-			pathDyn("/comment/:id", elements, map[string]interface{}{}, api.DeleteCommentById, w, r)
+			//Function to delete some info in the api
+			des = des || pathDyn("/signout", elements, map[string]interface{}{}, api.DeleteSession, w, r)
+			des = des || pathDyn("/user/:id", elements, map[string]interface{}{}, api.DeleteUserById, w, r)
+			des = des || pathDyn("/subject/:id", elements, map[string]interface{}{}, api.DeleteSubjectById, w, r)
+			des = des || pathDyn("/post/:id", elements, map[string]interface{}{}, api.DeletePostById, w, r)
+			des = des || pathDyn("/comment/:id", elements, map[string]interface{}{}, api.DeleteCommentById, w, r)
 
-		default:
+		}
+		if !des {
 			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(`{"message": "not found"}`))
+			w.Write([]byte(`{"msg": "not found"}`))
 		}
 	}
 }
 
+/*
+Dynamic Path
+We use a fonction to create an id that will be stored and reused to generate a new path
+*/
 func pathDyn(path, actualPath string, params map[string]interface{}, f func(map[string]string, map[string]interface{}, http.ResponseWriter, *http.Request), w http.ResponseWriter, r *http.Request) bool {
 	temp := strings.Split(path, "/")
 	temp1 := strings.Split(actualPath, "/")

@@ -1,4 +1,4 @@
-function CheckPassword(){
+function CheckPassword() {
     let Confirmation_Password = document.getElementById("Confirmation_Password").value
     let Password = document.getElementById("password").value
     let min = false;
