@@ -6,6 +6,7 @@ import (
 	"unicode"
 )
 
+//Function to check if the password is valid
 func PasswordVerif(password string) bool {
 	var (
 		hasMinLen  = false
@@ -32,16 +33,19 @@ func PasswordVerif(password string) bool {
 	return hasMinLen && hasUpper && hasLower && hasNumber && hasSpecial
 }
 
+//Function to check if the email is valid
 func EmailVerif(email string) bool {
 	_, err := mail.ParseAddress(email)
 	return err == nil
 }
 
+//Function to check if the date is valid
 func DateVerif(Date string) bool {
 	_, err := time.Parse("2006-01-02", Date)
 	return err == nil
 }
 
+//Function to check if the nsfw is valid
 func NSFWVerif(NSFW int) bool {
 	if NSFW == 0 || NSFW == 1 {
 		return true
@@ -49,6 +53,7 @@ func NSFWVerif(NSFW int) bool {
 	return false
 }
 
+//Function to check if the Riot id is valid
 func RiotVerif(RiotId string) bool {
 	if RiotId == "" {
 		return true
@@ -57,6 +62,7 @@ func RiotVerif(RiotId string) bool {
 	}
 }
 
+//Function to check if the image is valid
 func ImageVerif(Image string) bool {
 	return true
 }

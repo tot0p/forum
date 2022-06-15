@@ -4,13 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>404</title>
-    <link rel="stylesheet" type="text/css" href="style/register.css" />
+    <link rel="stylesheet" type="text/css" href="/style/404.css" />
 </head>
 
 <body>
     <div>
-        <h1>404</h1>
-        <p>{{.Url}} not found</p>
+        <main class="bsod container">
+            <h1 class="neg title" style="font-size: 4em;"><span class="bg">Alert! - BSOD</span></h1>
+            <h1 class="neg title"><span class="bg">Error - 404</span></h1>
+            <h1 class="neg title"><span class="bg">Cant find "{{.Url}}"</span></h1>
+            <br>
+            <p>An error has occured, to continue:</p>
+            <p>* Return to our homepage.<br />
+            * Send us an e-mail about this error and try later.</p>
+            <nav class="nav">
+              <a href="/" class="link">home</a>&nbsp;|&nbsp;<a href="/contact" class="link">contact us</a>
+            </nav>
+        </main>
     </div>
 </body>
 

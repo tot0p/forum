@@ -20,15 +20,14 @@ type User struct {
 	Title          string `json:"title"`
 	Bio            string `json:"bio"`
 	Premium        int    `json:"premium"`
-	Follows        string `json:"follows"`
 }
 
-//Function to convert Hex to Base64
+//Method to convert Hex to Base64
 func (user *User) ToBase64() string {
 	return base64.StdEncoding.EncodeToString(user.ProfilePicture)
 }
 
-//Function to defend the user making sur not to give OauthToken and Password
+//Method to defend the user of giving his OauthToken and Password
 func (u *User) Sec() {
 	u.Password = ""
 	u.OauthToken = ""

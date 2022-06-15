@@ -2,7 +2,7 @@
     display: grid;
     height: 100%;
     width: 100%;
-    grid-template-rows: 100px 1400px 100px;
+    grid-template-rows: 100px 1500px 100px;
     grid-auto-columns: 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
@@ -92,6 +92,10 @@
     scrollbar-width: none;
 }
 
+.post2_container::-webkit-scrollbar {
+    display: none;
+}
+
 .post3_container {
     grid-area: 6 / 1 / 6 / 4;
     margin: 70px;
@@ -105,6 +109,10 @@
     overflow: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+.post3_container::-webkit-scrollbar {
+    display: none;
 }
 
 .profile_display:hover {

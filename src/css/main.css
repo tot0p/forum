@@ -7,6 +7,11 @@
 
 */
 
+.pegi {
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+}
+
 html {
     height: 100%;
     width: 100%;
@@ -22,6 +27,33 @@ body {
 }
 
 .page {
+    display: none;
+}
+
+.like_dislike {
+    font-family: 'Dosis', sans-serif;
+    color: #0E0B16;
+    display: flex;
+    grid-area: 4 / 1 / 4 / 4;
+    font-size: 200%;
+    justify-content: space-evenly;
+}
+
+.explorer {
+    margin: 70px;
+    border: double 5px transparent;
+    border-radius: 80px;
+    background-origin: border-box;
+    background-image: linear-gradient(#000000, #000000), radial-gradient(circle at top left, #4717F6, #4717F6);
+    background-clip: content-box, border-box;
+    transition: all .2s ease-out;
+    height: 500px;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.explorer::-webkit-scrollbar {
     display: none;
 }
 

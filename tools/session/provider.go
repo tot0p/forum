@@ -13,6 +13,7 @@ type Provider struct {
 	list     *list.List               // gc
 }
 
+//Method to initialize the session of an user using his sid
 func (pder *Provider) SessionInit(sid string) (*SessionStore, error) {
 	pder.lock.Lock()
 	defer pder.lock.Unlock()
@@ -26,6 +27,7 @@ func (pder *Provider) SessionInit(sid string) (*SessionStore, error) {
 	return newsess, nil
 }
 
+//Method to read a session using a sid
 func (pder *Provider) SessionRead(sid string) (*SessionStore, error) {
 	if element, ok := pder.Sessions[sid]; ok {
 		return element.Value.(*SessionStore), nil
@@ -33,6 +35,7 @@ func (pder *Provider) SessionRead(sid string) (*SessionStore, error) {
 	return nil, fmt.Errorf("Invalid Session With SID %s", sid)
 }
 
+//Method to delete a session using a sid
 func (pder *Provider) SessionDestroy(sid string) error {
 	if element, ok := pder.Sessions[sid]; ok {
 		delete(pder.Sessions, sid)
@@ -42,6 +45,7 @@ func (pder *Provider) SessionDestroy(sid string) error {
 	return fmt.Errorf("Invalid Session With SID %s", sid)
 }
 
+//Method to time out a session if the time limit has exceeded
 func (pder *Provider) SessionTimout(maxlifetime int64) {
 	pder.lock.Lock()
 	defer pder.lock.Unlock()

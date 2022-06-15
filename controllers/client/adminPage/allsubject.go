@@ -14,7 +14,7 @@ type AllSubject struct {
 	User        models.User
 }
 
-//Method linked to the page contain all the subjects
+//Method linked to the page containing all the subjects
 func (a *AllSubject) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	a.AllSubjects = []models.Subject{}
 	cookie, err := r.Cookie("SID")
@@ -25,11 +25,11 @@ func (a *AllSubject) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[str
 		a.Connected = err == nil
 	}
 	if !a.Connected {
-		w.Write([]byte("{\"err\":\"403\",\"msg\":\"Session invalide\"}"))
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	if a.User.Role != "admin" {
-		w.Write([]byte("{\"err\":\"403\",\"msg\":\"Forbidden\"}"))
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	if r.Method == "POST" {

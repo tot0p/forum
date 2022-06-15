@@ -13,6 +13,7 @@ import (
 
 //Function to login an user on the website
 func UserLogin(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	if params["username"] == nil || params["password"] == nil {
 		w.WriteHeader(500)
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"Username or Password cant be nil\"}"))
@@ -49,8 +50,9 @@ func UserLogin(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(rep)
 }
 
-//Function to get the number of user connected on the website
+//Function to get the number of users connected on the website
 func GetNBUserConnected(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	count, err := json.Marshal(models.Count{Nb: session.GlobalSessions.GetNBSession()})
 	if err != nil {
 		w.WriteHeader(500)
@@ -62,6 +64,7 @@ func GetNBUserConnected(paramsURL map[string]string, params map[string]interface
 
 //Function to stop a session
 func DeleteSession(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))

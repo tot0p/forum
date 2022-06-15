@@ -13,8 +13,9 @@ import (
 	"strings"
 )
 
-//Function to get all Users
+//Function to get all users
 func GetAllUsers(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -54,8 +55,9 @@ func GetAllUsers(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(users)
 }
 
-//Function to Search an User
+//Function to search an user
 func SearchUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allUsers, err := repository.GetAllUser()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -69,7 +71,7 @@ func SearchUser(paramsURL map[string]string, params map[string]interface{}, w ht
 	}
 	for i := range *allUsers {
 		(*allUsers)[i].Sec()
-		if strings.Contains(strings.ToLower((*allUsers)[i].Username), strings.ToLower(word)) {
+		if strings.Contains(strings.ToLower((*allUsers)[i].Username), strings.ToLower(word)) && (*allUsers)[i].UUID != "0" {
 			searchUser = append(searchUser, (*allUsers)[i])
 		}
 	}
@@ -83,6 +85,7 @@ func SearchUser(paramsURL map[string]string, params map[string]interface{}, w ht
 
 //Function to get an user by his id
 func GetUserById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	userById, err := repository.GetUser("UUID", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -97,8 +100,9 @@ func GetUserById(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(user)
 }
 
-//Function to get an user by is Username
+//Function to get an user by his username
 func GetUserByUsername(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	username, err := url.QueryUnescape(paramsURL["username"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -118,8 +122,9 @@ func GetUserByUsername(paramsURL map[string]string, params map[string]interface{
 	w.Write(user)
 }
 
-//Function to create
+//Function to create an user
 func CreateUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	var (
 		oauth, password string
 	)
@@ -159,8 +164,9 @@ func CreateUser(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Delete an user by his Id
+//Delete an user by his id
 func DeleteUserById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -186,8 +192,9 @@ func DeleteUserById(paramsURL map[string]string, params map[string]interface{}, 
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to modify an user using by his id
+//Function to modify an user using his id
 func PutUserById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -279,9 +286,6 @@ func PutUserById(paramsURL map[string]string, params map[string]interface{}, w h
 	if params["premium"] != nil {
 		userById.Premium = int(params["premium"].(float64))
 	}
-	if params["follows"] != nil {
-		userById.Follows = params["follows"].(string)
-	}
 	err = repository.PostUser(*userById, "UUID", userById.UUID)
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -297,8 +301,9 @@ func PutUserById(paramsURL map[string]string, params map[string]interface{}, w h
 	}
 }
 
-//Function to get an user Username
+//Function to get an user's username
 func GetUserUsername(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	user := make(map[string]string)
 	if paramsURL["id"] == "" {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"UUID Not Supplied\"}"))
@@ -315,6 +320,7 @@ func GetUserUsername(paramsURL map[string]string, params map[string]interface{},
 
 //Function to get your user
 func GetUserMe(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))

@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+//Function to load the environnement
 func LoadEnv(path string) error {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {

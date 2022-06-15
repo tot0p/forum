@@ -15,8 +15,9 @@ import (
 	"strings"
 )
 
-//Function to get all Subject
+//Function to get all subjects
 func GetAllSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allSubjects, err := repository.GetAllSubject()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -32,6 +33,7 @@ func GetAllSubject(paramsURL map[string]string, params map[string]interface{}, w
 
 //Function to get a subject using an id
 func GetSubjectById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	subjectById, err := repository.GetSubject("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -45,8 +47,9 @@ func GetSubjectById(paramsURL map[string]string, params map[string]interface{}, 
 	w.Write(subject)
 }
 
-//Function to Search a subject
+//Function to search a subject
 func SearchSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allSubjects, err := repository.GetAllSubject()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -71,8 +74,9 @@ func SearchSubject(paramsURL map[string]string, params map[string]interface{}, w
 	w.Write(subjects)
 }
 
-//Function to Create a subject
+//Function to create a subject
 func CreateSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -116,8 +120,9 @@ func CreateSubject(paramsURL map[string]string, params map[string]interface{}, w
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to delete a subject by using an id
+//Function to delete a subject using an id
 func DeleteSubjectById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -149,8 +154,9 @@ func DeleteSubjectById(paramsURL map[string]string, params map[string]interface{
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to modify a subject by using an id
+//Function to modify a subject using an id
 func PutSubjectsById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -218,7 +224,7 @@ func PutSubjectsById(paramsURL map[string]string, params map[string]interface{},
 	}
 }
 
-//Function to Check if a subject is in a array of subjects
+//Function to check if a subject is in an array of subjects
 func ContainsSubject(AllSubjects []models.Subject, subject models.Subject) bool {
 	for i := range AllSubjects {
 		if AllSubjects[i].Id == subject.Id {
@@ -230,6 +236,7 @@ func ContainsSubject(AllSubjects []models.Subject, subject models.Subject) bool 
 
 //Function to get a random id of a subject
 func GetNbRandomSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetAllSubject()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -269,6 +276,7 @@ func GetNbRandomSubject(paramsURL map[string]string, params map[string]interface
 
 //Function to get the last subject edited
 func GetSubjectLastUpdate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetSubjectLastUpdate()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -300,8 +308,9 @@ func GetSubjectLastUpdate(paramsURL map[string]string, params map[string]interfa
 	w.Write(posts)
 }
 
-//
+//Function to upvote a subject
 func SubjectLike(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -356,7 +365,9 @@ func SubjectLike(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
+//Function to downvote a subject
 func SubjectHate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -411,8 +422,9 @@ func SubjectHate(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to Count the number of subject on the website
+//Function to count the number of subjects on the website
 func SubjectCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	Subject, err := repository.GetSubject("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -427,8 +439,9 @@ func SubjectCount(paramsURL map[string]string, params map[string]interface{}, w 
 	w.Write(result)
 }
 
-//function to say if a user already like or dislike subject
+//Function to tell if an user has already upvoted or downvoted a subject
 func UserLikeOrHateSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -468,7 +481,9 @@ func UserLikeOrHateSubject(paramsURL map[string]string, params map[string]interf
 	w.Write([]byte("{\"downvote\":false,\"upvote\":false}"))
 }
 
+//Function to get all subjects created by an user
 func GetSubjectByUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	id := paramsURL["id"]
 	allSubject, err := repository.GetSubjectByUserId(id)
 	if err != nil {
@@ -476,6 +491,30 @@ func GetSubjectByUser(paramsURL map[string]string, params map[string]interface{}
 		return
 	}
 	subject, err := json.Marshal(allSubject)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(subject)
+}
+
+func GetSubjectByTag(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
+	tag := strings.ToLower(paramsURL["tag"])
+	allSubject, err := repository.GetAllSubject()
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	subjects := []models.Subject{}
+	for _, i := range *allSubject {
+		if i.HaveTag(tag) {
+			subjects = append(subjects, i)
+		}
+	}
+
+	subject, err := json.Marshal(subjects)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))

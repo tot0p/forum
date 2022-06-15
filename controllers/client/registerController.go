@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"forum/tools"
+	"forum/tools/request"
 	"forum/tools/riot"
 	"forum/tools/verif"
 	"html/template"
@@ -19,15 +20,25 @@ type RegisterPage struct {
 	Error string
 }
 
-//Function to be register on the api
+//Method to register on the api
 func (p *RegisterPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
+	cookie, err := r.Cookie("SID")
+	Connected := false
+	if err != nil {
+		Connected = false
+	} else {
+		_, err := request.GetMe(cookie.Value)
+		Connected = err == nil
+	}
+	if Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
 		if err != nil {
 			log.Fatal(err)
 		}
-		// admin
-		// adminADMIN1234!
 		PostDB := true
 		var ppFileBytes []byte = []byte(" ")
 		Data := make(map[string]string)
@@ -72,11 +83,15 @@ func (p *RegisterPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[s
 				if err != nil {
 					log.Fatal(err)
 				} else {
-					_, err = ioutil.ReadAll(resp.Body)
+					x, err := ioutil.ReadAll(resp.Body)
 					if err != nil {
 						log.Fatal(err)
 					} else {
-						http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+						if string(x) != "{\"msg\":\"success\"}" {
+							p.Error = string(x)
+						} else {
+							http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+						}
 					}
 				}
 			}

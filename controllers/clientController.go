@@ -43,15 +43,18 @@ func (a *ClientController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	des = des || pathDynPage("/update-profile", key, w, r, &client.UpdateProfilePage{Path: "edit_profile.html"})
 	des = des || pathDynPage("/update-subject/:id", key, w, r, &client.UpdateSubjectPage{Path: "edit_subject.html"})
 	des = des || pathDynPage("/update-post/:id", key, w, r, &client.UpdatePostPage{Path: "edit_post.html"})
-	des = des || pathDynPage("/update-comment", key, w, r, &client.UpdateCommentPage{Path: "edit_comment.html"})
 	des = des || pathDynPage("/explorer", key, w, r, &client.SubjectExplorerPage{Path: "explorer.html"})
 	des = des || pathDynPage("/GTU", key, w, r, &client.StaticPage{Path: "GTU.html"})
 	des = des || pathDynPage("/privacy", key, w, r, &client.StaticPage{Path: "privacy.html"})
 	des = des || pathDynPage("/team", key, w, r, &client.TeamPage{Path: "team.html"})
+	des = des || pathDynPage("/license", key, w, r, &client.StaticPage{Path: "license.html"})
+	des = des || pathDynPage("/contact", key, w, r, &client.StaticPage{Path: "Contact.html"})
+	des = des || pathDynPage("/search", key, w, r, &client.PageSearch{Path: "search.html"})
+	des = des || pathDynPage("/tag/:type/:tag", key, w, r, &client.TagPage{Path: "tags.html"})
+
 	if !des {
 		pathDynPage(key, key, w, r, &client.Page404{Path: "404.html"})
 	}
-
 }
 
 /*

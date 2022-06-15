@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"forum/models"
+	"forum/tools"
 	"forum/tools/request"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -20,7 +22,17 @@ type PostPage struct {
 	Connected bool
 }
 
-//Function to get the Username of the Actual owner for the current post
+//Function to upvote or downvote a post
+func (i PostPage) GetUpVoteDownVotePost(post models.Post) models.Vote {
+	return post.GetVote()
+}
+
+//Function to upvote or downvote a subject
+func (i PostPage) GetUpVoteDownVoteComment(com models.Comment) models.Vote {
+	return com.GetVote()
+}
+
+//Function to get the username of the actual owner for the current post
 func (i PostPage) GetOwnerUsername(UUID string) string {
 	if _, ok := i.Usernames[UUID]; ok {
 		return i.Usernames[UUID]
@@ -42,7 +54,7 @@ func (i PostPage) GetOwnerUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
-//Function to create a post page
+//Method to create a post page
 func (p *PostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	p.Usernames = make(map[string]string)
 	cookie, err := r.Cookie("SID")
@@ -57,24 +69,48 @@ func (p *PostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[strin
 		w.Write([]byte("{\"err\":\"not exist\"}"))
 		return
 	}
-	if r.Method == "POST" {
-		Comment := models.Comment{}
-		Comment.Parent = p.Post.Id
-		Comment.Content = r.PostFormValue("content")
-		err = request.PostComment(Comment, cookie.Value)
+	if r.Method == "POST" && p.Connected {
+		resp, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+			w.Write([]byte("{\"msg\":\"error request\"}"))
 			return
+		}
+		params := tools.PlaintTextToMap(resp)
+		if typ, ok := params["type"]; ok && typ != "" {
+			if id, ok := params["id"]; ok && id != "" {
+				if why, ok := params["why"]; ok && why != "" {
+					if params["type"] == "comment" {
+						request.LikeComment(params["id"], cookie.Value, params["why"])
+					} else if params["type"] == "post" {
+						request.LikePost(params["id"], cookie.Value, params["why"])
+					}
+				}
+			}
+		}
+		if _, ok := params["content"]; ok {
+			Comment := models.Comment{}
+			Comment.Parent = p.Post.Id
+			Comment.Content, err = url.QueryUnescape(params["content"])
+			if err != nil {
+				w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+				return
+			}
+			err = request.PostComment(Comment, cookie.Value)
+			if err != nil {
+				w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+				return
+			}
 		}
 		p.Post, err = request.GetPostById(m["id"])
 		if err != nil || p.Post.Id == "" {
-			w.Write([]byte("{\"err\":\"not exist\"}"))
+			temp := Page404{Path: "404.html"}
+			temp.ServeHTTP(w, r, m)
 			return
 		}
 	}
 	p.Comments, err = request.GetCommentsByPostId(p.Post.Id)
 	if err != nil {
-		fmt.Println("oh non err dans post page")
+		p.Comments = []models.Comment{}
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))

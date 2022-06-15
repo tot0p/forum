@@ -19,27 +19,48 @@ type Subject struct {
 	Owner        string `json:"owner"`
 }
 
-//Function to convert Hex to Base64
+//Method to convert Hex to Base64
 func (subject *Subject) ToBase64() string {
 	return base64.StdEncoding.EncodeToString(subject.Image)
 }
 
-//model for tags in subject
+//Model for tags in subject
 func (subject *Subject) ConvertTags() []string {
 	return strings.Split(subject.Tags, "#")[1:]
 }
 
-//model for upvotes in subject
+func (subject *Subject) HaveTag(tag string) bool {
+	for _, i := range subject.ConvertTags() {
+		if tag == strings.ToLower(i) {
+			return true
+		}
+	}
+	return false
+}
+
+//Model for upvotes in subject
 func (subject *Subject) ConvertUpVotes() []string {
 	return strings.Split(subject.UpVotes, "#")[1:]
 }
 
-//model for down in subject
+//Model for downvotes in subject
 func (subject *Subject) ConvertDownVotes() []string {
 	return strings.Split(subject.DownVotes, "#")[1:]
 }
 
-//Function to convert Slice to String
+//Method to convert slice to string
 func (subject *Subject) ConvertSliceToString(a []string) string {
 	return strings.Join(a, "#")
+}
+
+func (subject *Subject) GetVote() Vote {
+	return Vote{UpVote: strings.Count(subject.UpVotes, "#"), DownVote: strings.Count(subject.DownVotes, "#")}
+}
+
+func (subject *Subject) IsLike(UUID string) bool {
+	return strings.Contains(subject.UpVotes, UUID)
+}
+
+func (subject *Subject) IsHate(UUID string) bool {
+	return strings.Contains(subject.DownVotes, UUID)
 }

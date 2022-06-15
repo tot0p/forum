@@ -18,13 +18,19 @@
 </head>
 
 <body>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
     <div class="page">
         <div class="profile_landing_layout">
             <div class="nav_container">
                 <nav class="navbar">
                     <div class="shortcuts_container">
                         <div class="shortcuts">
-                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-magnifying-glass"></i> Explore Subjects</a>
+                            <a class="shortcuts_btn shortcuts_text" href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-tags"></i></i></i> Explore Subjects</a>
                         </div>
                         {{if .Connected}}
                         <div class="shortcuts">
@@ -33,14 +39,20 @@
                         <div class="shortcuts">
                             <a class="shortcuts_btn shortcuts_text" href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
                         </div>
-                        {{else}}
-                        <div class="shortcuts">
-                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
-                        </div>
-                        <div class="shortcuts">
-                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
-                        </div>
                         {{end}}
+                        <div class="shortcuts">
+                            <div class="shortcuts_btn shortcuts_text">
+                                <form action="/search" method="GET" style="display: flex;">
+                                    <input type="text" name="search-value" id="search-value" style="width: 70px; border-radius: 100px;font-size: 70%;background: #E7DFDD;" class="shortcuts_text"/>
+                                    <select name="search" id="search-type shortcuts_text" style="border-radius: 100px;margin-left:5px;margin-right:5px;font-size: 50%;background: #E7DFDD;">
+                                        <option value="Subject">Subject</option>
+                                        <option value="Post">Post</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                    <a onClick="this.parentNode.submit(); "><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="profile">
                         {{if .Connected}}
@@ -51,6 +63,13 @@
                         </div>
                         <div class="username_container">
                             <p class="username">{{.User.Username}}</p>
+                        </div>
+                        {{else}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
                         </div>
                         {{end}}
                     </div>
@@ -81,10 +100,13 @@
                         <p>Genre : ​ </p> <i class="fa-solid fa-genderless"></i> {{end}}
                     </div>
                     <div class="profile_display">
-                        <p>Summoner Name : {{.SummonerName}}</p>
+                        <p>Bio : {{.User.Bio}}</p>
                     </div>
                     <div class="profile_display">
-                        <p>Profile Picture</p>
+                        <p>Summoner Name : {{.SummonerName}}</p>
+                    </div>
+                    <div class="profile_display" style="flex-direction: column;">
+                        <p>Profile Picture :</p>
                         <img src="data:image/png;base64, {{.User.ToBase64}}" style="width:100px" />
                     </div>
                     {{if .Ranked}}
@@ -122,10 +144,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="loader">
-        <div id="loading"></div>
-    </div>
     </div>
 </body>
 

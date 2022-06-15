@@ -6,6 +6,7 @@ import (
 	"forum/models"
 	"forum/tools/session"
 	"log"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -79,7 +80,7 @@ func InsertPostTable(post models.Post) error {
 		'%s',
 		'%s'
 	);
-`, post.Title, post.Description, post.Image, post.Tags, post.Comments, post.NSFW, post.PublishDate, post.UpVotes, post.DownVotes, post.Owner, post.Parent))
+`, strings.Replace(post.Title, "'", "''", -1), strings.Replace(post.Description, "'", "''", -1), post.Image, strings.Replace(post.Tags, "'", "''", -1), post.Comments, post.NSFW, post.PublishDate, post.UpVotes, post.DownVotes, post.Owner, post.Parent))
 	if err != nil {
 		return err
 	}
@@ -111,7 +112,7 @@ func GetPost(searchColumn, searchValue string) (*models.Post, error) {
 	owner,
 	parent
 FROM post WHERE
-%s = '%s';`, searchColumn, searchValue))
+%s = '%s';`, searchColumn, strings.Replace(searchValue, "'", "''", -1)))
 	post := new(models.Post)
 	for rows.Next() {
 		rows.Scan(&post.Id, &post.Title, &post.Description, &str, &post.Tags, &post.Comments, &post.NSFW, &post.PublishDate, &post.UpVotes, &post.DownVotes, &post.Owner, &post.Parent)
@@ -164,7 +165,7 @@ func PostPost(post models.Post, searchColumn, searchValue string) error {
 		downvotes = '%s',
 		owner = '%s',
 		parent = '%s'
-  WHERE %s = '%s';`, post.Title, post.Description, post.Image, post.Tags, post.Comments, post.NSFW, post.PublishDate, post.UpVotes, post.DownVotes, post.Owner, post.Parent, searchColumn, searchValue))
+  WHERE %s = '%s';`, strings.Replace(post.Title, "'", "''", -1), strings.Replace(post.Description, "'", "''", -1), post.Image, strings.Replace(post.Tags, "'", "''", -1), post.Comments, post.NSFW, post.PublishDate, post.UpVotes, post.DownVotes, post.Owner, post.Parent, searchColumn, searchValue))
 	return err
 }
 

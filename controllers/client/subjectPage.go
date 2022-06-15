@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"forum/models"
+	"forum/tools"
 	"forum/tools/request"
 	"html/template"
 	"io/ioutil"
@@ -22,7 +23,17 @@ type SubjectPage struct {
 	AllPost              []models.Post
 }
 
-//Function to get the Username of the actual session
+//Function to upvote or downvote a post
+func (i SubjectPage) GetUpVoteDownVotePost(post models.Post) models.Vote {
+	return post.GetVote()
+}
+
+//Function to upvote or downvote a subject
+func (i SubjectPage) GetUpVoteDownVoteSubject(subject models.Subject) models.Vote {
+	return subject.GetVote()
+}
+
+//Method to get the username of the actual session
 func (p SubjectPage) GetOwnerUsername(UUID string) string {
 	if _, ok := p.Usernames[UUID]; ok {
 		return p.Usernames[UUID]
@@ -44,7 +55,7 @@ func (p SubjectPage) GetOwnerUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
-//Function to create a page for a subject
+//Method to create a page for a subject
 func (p *SubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	p.Usernames = make(map[string]string)
 	cookie, err := r.Cookie("SID")
@@ -55,15 +66,32 @@ func (p *SubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[st
 		p.Connected = err == nil
 		p.ProfilePictureBase64 = base64.StdEncoding.EncodeToString(p.User.ProfilePicture)
 	}
+	if r.Method == "POST" && p.Connected {
+		resp, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.Write([]byte("{\"msg\":\"error request\"}"))
+			return
+		}
+		params := tools.PlaintTextToMap(resp)
+		if typ, ok := params["type"]; ok && typ != "" {
+			if id, ok := params["id"]; ok && id != "" {
+				if why, ok := params["why"]; ok && why != "" {
+					if params["type"] == "subject" {
+						request.LikeSubject(params["id"], cookie.Value, params["why"])
+					} else if params["type"] == "post" {
+						request.LikePost(params["id"], cookie.Value, params["why"])
+					}
+				}
+			}
+		}
+	}
 	p.Subject, err = request.GetSubjectById(m["id"])
 	if err != nil || p.Subject.Id == "" {
-		w.Write([]byte("{\"err\":\"not exist\"}"))
+		temp := Page404{Path: "404.html"}
+		temp.ServeHTTP(w, r, m)
 		return
 	}
 	p.AllPost, _ = request.GetPostsBySubjectId(p.Subject.Id)
-	// if err != nil || p.AllPost == nil {
-
-	// }
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))
 	tmpl.Execute(w, p)

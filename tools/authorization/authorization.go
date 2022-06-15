@@ -5,11 +5,13 @@ import (
 	"strings"
 )
 
+//Function to set the token's authorization
 func SetAuthorizationBearer(token string, r *http.Request) {
 	var bearer = "Bearer " + token
 	r.Header.Add("Authorization", bearer)
 }
 
+//Function to get the token's authorization
 func GetAuthorizationBearer(w http.ResponseWriter, r *http.Request) string {
 	reqToken := r.Header.Get("Authorization")
 	splitToken := strings.Split(reqToken, "Bearer")

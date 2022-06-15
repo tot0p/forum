@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"forum/tools"
+	"forum/tools/request"
 	"forum/tools/session"
 	"html/template"
 	"io/ioutil"
@@ -18,7 +19,20 @@ type LoginPage struct {
 	Err  string
 }
 
+//Method to manage the login of an user
 func (p *LoginPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
+	cookie, err := r.Cookie("SID")
+	Connected := false
+	if err != nil {
+		Connected = false
+	} else {
+		_, err := request.GetMe(cookie.Value)
+		Connected = err == nil
+	}
+	if Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	if r.Method == "POST" {
 		reqBody, err := ioutil.ReadAll(r.Body)
 		if err != nil {

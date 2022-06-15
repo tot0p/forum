@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"forum/models"
 	"log"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -52,7 +53,7 @@ func InsertCommentTable(comment models.Comment) error {
 		'%s'
 	);
 
-`, comment.Owner, comment.Content, comment.UpVotes, comment.DownVotes, comment.PublishDate, comment.Parent))
+`, comment.Owner, strings.Replace(comment.Content, "'", "''", -1), comment.UpVotes, comment.DownVotes, comment.PublishDate, comment.Parent))
 	if err != nil {
 		return err
 	}
@@ -65,9 +66,7 @@ func InsertCommentTable(comment models.Comment) error {
 		return err
 	}
 	comments := postToUpdate.ConvertComments()
-	fmt.Println(comments)
 	comments = append(comments, postNew.Id)
-	fmt.Println(comments)
 	postToUpdate.Comments = postToUpdate.ConvertSliceToString(comments)
 	err = PostPost(*postToUpdate, "id", postToUpdate.Id)
 	if err != nil {
@@ -76,6 +75,7 @@ func InsertCommentTable(comment models.Comment) error {
 	return err
 }
 
+//Function to get a comment in the database
 func GetComment(searchColumn, searchValue string) (*models.Comment, error) {
 	rows, err := forumDatabase.QuerryData(fmt.Sprintf(`SELECT id,
 	owner,
@@ -85,7 +85,7 @@ func GetComment(searchColumn, searchValue string) (*models.Comment, error) {
 	publishDate,
 	parent
 FROM comment WHERE
-%s = '%s';`, searchColumn, searchValue))
+%s = '%s';`, searchColumn, strings.Replace(searchValue, "'", "''", -1)))
 	comment := new(models.Comment)
 	for rows.Next() {
 		rows.Scan(&comment.Id, &comment.Owner, &comment.Content, &comment.UpVotes, &comment.DownVotes, &comment.PublishDate, &comment.Parent)
@@ -96,7 +96,7 @@ FROM comment WHERE
 	return comment, err
 }
 
-//Function
+//Function to get all the comments from the database
 func GetAllComment() (*[]models.Comment, error) {
 	rows, err := forumDatabase.QuerryData(`SELECT id,
 	owner,
@@ -119,6 +119,7 @@ FROM comment;
 	return commentTable, err
 }
 
+//Function to post a comment in the database
 func PostComment(comment models.Comment, searchColumn, searchValue string) error {
 	_, err := forumDatabase.ExecuteStatement(fmt.Sprintf(`UPDATE comment
 	SET	owner = '%s',
@@ -127,10 +128,11 @@ func PostComment(comment models.Comment, searchColumn, searchValue string) error
 		downvotes = '%s',
 		publishDate = '%s',
 		parent = '%s'
-  WHERE %s = '%s';`, comment.Owner, comment.Content, comment.UpVotes, comment.DownVotes, comment.PublishDate, comment.Parent, searchColumn, searchValue))
+  WHERE %s = '%s';`, comment.Owner, strings.Replace(comment.Content, "'", "''", -1), comment.UpVotes, comment.DownVotes, comment.PublishDate, comment.Parent, searchColumn, searchValue))
 	return err
 }
 
+//Function to delete a comment from the database
 func DeleteComment(searchColumn, searchValue string) error {
 	_, err := forumDatabase.ExecuteStatement(fmt.Sprintf(`DELETE FROM comment
 	WHERE %s = '%s';`, searchColumn, searchValue))

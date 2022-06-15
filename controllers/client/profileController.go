@@ -18,7 +18,7 @@ type ProfilePage struct {
 	Ranked       bool
 }
 
-//Function to create a profile page
+//Method to create a profile page
 func (p *ProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {
@@ -29,6 +29,7 @@ func (p *ProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[st
 	}
 	if !p.Connected {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 	p.UserRiot = riot.API.GetRankById(p.User.RiotId)
 	if len(p.UserRiot) < 1 {

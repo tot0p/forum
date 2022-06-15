@@ -28,7 +28,7 @@ type UserPage struct {
 	Usernames            map[string]string
 }
 
-//Function to get the Username of the Actual owner for the current post
+//Method to get the username of the actual owner for the current post
 func (i UserPage) GetOwnerUsername(UUID string) string {
 	if _, ok := i.Usernames[UUID]; ok {
 		return i.Usernames[UUID]

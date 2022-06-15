@@ -11,6 +11,7 @@ import (
 	"os"
 )
 
+//Function to get all the comments from the api
 func GetAllComment() ([]models.Comment, error) {
 	AllComments := []models.Comment{}
 	url := os.Getenv("url_api") + "comments"
@@ -42,6 +43,7 @@ func GetAllComment() ([]models.Comment, error) {
 	return AllComments, nil
 }
 
+//Function to get a comment using an id from the api
 func GetCommentById(id string) (models.Comment, error) {
 	Comment := models.Comment{}
 	url := os.Getenv("url_api") + "comment/" + id
@@ -73,10 +75,10 @@ func GetCommentById(id string) (models.Comment, error) {
 	return Comment, nil
 }
 
+//Function to create a comment in the api
 func PostComment(comment models.Comment, SID string) error {
 	url := os.Getenv("url_api") + "comment"
 	client := &http.Client{}
-	//modifiedSubject := make(map[string]interface{})
 	commentBytes, err := json.Marshal(comment)
 	if err != nil {
 		return err
@@ -110,6 +112,7 @@ func PostComment(comment models.Comment, SID string) error {
 	return nil
 }
 
+//Function to get all the comments of a post using an id
 func GetCommentsByPostId(id string) ([]models.Comment, error) {
 	AllComments := []models.Comment{}
 	url := os.Getenv("url_api") + "comment/GetCommentByPost/" + id
@@ -131,4 +134,36 @@ func GetCommentsByPostId(id string) ([]models.Comment, error) {
 		return nil, err
 	}
 	return AllComments, nil
+}
+
+//Function to upvote or downvote a comment
+func LikeComment(id, SID, votes string) error {
+	url := os.Getenv("url_api") + "comment/" + id
+	if votes == "upvote" {
+		url += "/upvote"
+	} else if votes == "downvote" {
+		url += "/downvote"
+	} else {
+		return nil
+	}
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("content-Type", "application/json")
+	authorization.SetAuthorizationBearer(SID, req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(reqBody, &votes)
+	if err != nil {
+		return err
+	}
+	return nil
 }

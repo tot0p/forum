@@ -30,7 +30,7 @@ func main() {
 	http.Handle("/api/", &controllers.APIController{})
 	fmt.Println("Start...")
 	fmt.Println("\thttp://localhost:8080")
-	// tools.Openbrowser("http://localhost:8080") // à décomenter
+	tools.Openbrowser("http://localhost:8080")
 	//static
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./src/css"))))
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./src/img"))))

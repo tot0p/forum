@@ -1,21 +1,18 @@
-html {
-    background-image: url(https://cdn.discordapp.com/attachments/907557540836028417/982228537069166632/backsign.png);
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
+
 
 @media screen and (min-width:980px) {
     .card {
+        font-family: 'Dosis', sans-serif;
+        font-size: 100%;
+        color: #0E0B16;
         margin-top: 5%;
         margin-left: 25%;
         height: auto;
-        background-color: rgba(32, 19, 19, 0.634);
+        background-color: #A239CA;
+        border-radius: 50px;
         width: 45%;
         flex-direction: column;
         display: flex;
-        box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
     }
     .Error {
         color: red;
@@ -34,14 +31,17 @@ html {
 @media screen and (max-width:979px) {
     /* Pour les moyen et petit appareils style tablette, téléphone */
     .card {
+        font-family: 'Dosis', sans-serif;
+        font-size: 100%;
+        color: #0E0B16;
         margin-top: 5%;
         margin-left: 10%;
         height: auto;
-        background-color: rgba(32, 19, 19, 0.634);
+        background-color: #A239CA;
+        border-radius: 50px;
         width: 75%;
         flex-direction: column;
         display: flex;
-        box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
     }
     .Error {
         color: red;
@@ -60,7 +60,9 @@ html {
 
 .card-header {
     text-align: center;
-    color: white
+    color: #0E0B16;
+    font-family: 'Dosis', sans-serif;
+    font-size: 100%;
 }
 
 .Login {
@@ -68,19 +70,12 @@ html {
     flex-direction: column;
     width: 40%;
     margin: auto;
-    color: white
+    text-align: center;
+    font-family: 'Dosis', sans-serif;
+    font-size: 100%;
+    color: #0E0B16
 }
 
 .submit {
-    margin-top: 5%;
-    margin-left: 40%;
-    margin-right: auto;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 10px 5px 10px 2px rgba(0, 0, 0, 0.6);
-}
-
-.submit:hover {
-    background-color: #293a9993;
-    /* Green */
-    color: white;
+    border-radius: 10px;
 }

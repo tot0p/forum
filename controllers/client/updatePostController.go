@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type UpdatePostPage struct {
@@ -18,7 +19,7 @@ type UpdatePostPage struct {
 	Post                 models.Post
 }
 
-//Function to create a page on which you can update a post
+//Method to create a page on which you can update a post
 func (p *UpdatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {
@@ -28,16 +29,20 @@ func (p *UpdatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map
 		p.Connected = err == nil
 		p.ProfilePictureBase64 = base64.StdEncoding.EncodeToString(p.User.ProfilePicture)
 	}
+	if !p.Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	p.Post, err = request.GetPostById(m["id"])
 	if err != nil {
 		w.Write([]byte("error"))
 		return
 	}
-	if p.Post.Owner != p.User.UUID && p.User.Role != "admin" {
-		w.Write([]byte("{\"error\":\"forbiden access\"}"))
+	if p.Post.Owner != p.User.UUID && p.User.Role != "admin" && p.Post.Id == "" {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
-	if r.Method == "POST" {
+	if r.Method == "POST" && p.Connected {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
 		if err != nil {
 			log.Fatal(err)
@@ -45,7 +50,7 @@ func (p *UpdatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map
 		p.Post.Title = r.PostFormValue("title")
 		p.Post.Description = r.PostFormValue("description")
 		nsfw := r.PostFormValue("nsfw")
-		p.Post.Tags = r.PostFormValue("tags")
+		p.Post.Tags = strings.Join(ParseTag(r.PostFormValue("tags")), "#")
 		if nsfw == "on" {
 			p.Post.NSFW = 1
 		} else {
@@ -66,6 +71,7 @@ func (p *UpdatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map
 			w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
 			return
 		}
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))

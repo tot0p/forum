@@ -12,6 +12,7 @@ import (
 
 //Function to get all the comment
 func GetAllComment(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allComments, err := repository.GetAllComment()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -27,6 +28,7 @@ func GetAllComment(paramsURL map[string]string, params map[string]interface{}, w
 
 //Function to get a comment using the id
 func GetCommentById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	commentById, err := repository.GetComment("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -42,6 +44,7 @@ func GetCommentById(paramsURL map[string]string, params map[string]interface{}, 
 
 //Function to delete a comment using the id
 func DeleteCommentById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -70,11 +73,13 @@ func DeleteCommentById(paramsURL map[string]string, params map[string]interface{
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
 		return
 	}
+
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to create a new Comment
+//Function to create a new comment
 func CreateComment(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -103,6 +108,7 @@ func CreateComment(paramsURL map[string]string, params map[string]interface{}, w
 
 //Function to modify a comment using the id
 func PutCommentById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -157,7 +163,9 @@ func PutCommentById(paramsURL map[string]string, params map[string]interface{}, 
 	}
 }
 
+//Function to upvote a comment
 func CommentLike(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -212,7 +220,9 @@ func CommentLike(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
+//Function to downvote a comment
 func CommentHate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -267,8 +277,9 @@ func CommentHate(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to Count the number of subject on the website
+//Function to count the number of comments on the website
 func CommentCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	Comment, err := repository.GetComment("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -283,8 +294,9 @@ func CommentCount(paramsURL map[string]string, params map[string]interface{}, w 
 	w.Write(result)
 }
 
-//function to say if a user already like or dislike subject
+//Function to say if a user already upvote or downvote a comment
 func UserLikeOrHateComment(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -324,7 +336,9 @@ func UserLikeOrHateComment(paramsURL map[string]string, params map[string]interf
 	w.Write([]byte("{\"downvote\":false,\"upvote\":false}"))
 }
 
+//Function to get all comments of a post using an id
 func GetCommentsByPostId(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allComments, err := repository.GetCommentsByPostId(paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))

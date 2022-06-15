@@ -7,6 +7,7 @@ import (
 	"runtime"
 )
 
+//Function to open a web browser using an url
 func Openbrowser(url string) {
 	var err error
 	switch runtime.GOOS {

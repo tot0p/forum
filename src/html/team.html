@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/style/main.css" />
     <link rel="stylesheet" type="text/css" href="/style/landing.css" />
     <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+    <script src="/js/loading.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
@@ -16,7 +17,7 @@
 </head>
 
 <body>
-    <div>
+    <div class="page">
         <table>
             <thead>
                 <tr>
@@ -30,6 +31,8 @@
                     <th>SummonerName</th>
                     <th>Rank SoloQ</th>
                     <th>Rank Flex</th>
+                    <th>Github</th>
+                    <th>LinkedIn</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,15 +48,50 @@
                     <td>{{$.GetSummonerName $Team}}</td>
                     {{range $classement := $.GetRank $Team}}
                     <td>
+                        {{if ne $classement.Tier ""}}
                         <p>{{$classement.Tier}} {{$classement.Rank}}</p>
                         <img src="/img/Emblem_{{$classement.Tier}}.png" width="50" height="50" />
                         </p>
+                        {{end}}
                     </td>
+                    {{end}}
+                    {{if eq $Team.Username "Axou"}}
+                    <td><a href="https://github.com/Axou89">Github</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Sambre"}}
+                    <td><a href="https://github.com/SambreV95">Github</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Tot0p"}}
+                    <td><a href="https://github.com/Tot0p">Github</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "mkarten"}}
+                    <td><a href="https://github.com/mkarten">Github</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Aless"}}
+                    <td><a href="https://github.com/aless124">Github</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Axou"}}
+                    <td><a href="https://www.linkedin.com/in/axel-senecal-4641a31ba/">LinkedIn</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Sambre"}}
+                    <td><a href="https://www.linkedin.com/in/sambre-vandercoilden-108b49196/">LinkedIn</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Tot0p"}}
+                    <td><a href="https://www.linkedin.com/in/thomas-lemaitre78/">LinkedIn</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "mkarten"}}
+                    <td><a href="https://www.linkedin.com/in/luca-morgado/">LinkedIn</a></td>
+                    {{end}}
+                    {{if eq $Team.Username "Aless"}}
+                    <td><a href="https://www.linkedin.com/in/alessandro-farajallah-b16179242">LinkedIn</a></td>
                     {{end}}
                 </tr>
                 {{end}}
             </tbody>
         </table>
+    </div>
+    <div class="loader">
+        <div id="loading"></div>
     </div>
 </body>
 

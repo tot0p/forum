@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/style/main.css" />
+    <link rel="stylesheet" type="text/css" href="/style/landing.css" />
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+    <link rel="stylesheet" type="text/css" href="/style/profile.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
+    <script src="/js/loading.js"></script>
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/5017b7341e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
+    <div class="page">
+        <div class="subject_landing_layout">
+            <div class="nav_container">
+                <nav class="navbar">
+                    <div class="shortcuts_container">
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-tags"></i></i></i> Explore Subjects</a>
+                        </div>
+                        {{if .Connected}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/profile"> <i class="fa-solid fa-user"></i> My Profile</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                        </div>
+                        {{end}}
+                        <div class="shortcuts">
+                            <div class="shortcuts_btn shortcuts_text">
+                                <form action="/search" method="GET" style="display: flex;">
+                                    <input type="text" name="search-value" id="search-value" style="width: 70px; border-radius: 100px;font-size: 70%;background: #E7DFDD;" class="shortcuts_text"/>
+                                    <select name="search" id="search-type shortcuts_text" style="border-radius: 100px;margin-left:5px;margin-right:5px;font-size: 50%;background: #E7DFDD;">
+                                        <option value="Subject">Subject</option>
+                                        <option value="Post">Post</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                    <a onClick="this.parentNode.submit(); "><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        {{if .Connected}}
+                        <div class="profile_picture_container">
+                            <a href="/profile">
+                                <img class="profile_picture" src="data:image/png;base64, {{.User.ToBase64}}" />
+                            </a>
+                        </div>
+                        <div class="username_container">
+                            <p class="username">{{.User.Username}}</p>
+                        </div>
+                        {{else}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
+                        </div>
+                        {{end}}
+                    </div>
+                </nav>
+            </div>
+            {{if .Subjects}}
+            <div class="explorer" style="height: 1000px; ;">
+                {{range $Subject := .Subjects}}
+                <div class="main_subject_container">
+                    <div class="subject">
+                        <div class="subject_click" onclick="window.location.href = '/subject/{{$Subject.Id}}';">
+                            <div class="subject_title">
+                                {{$Subject.Title}} {{if eq $Subject.NSFW 1}}
+                                <div style="margin-left: 15px;margin-top: 5px;">
+                                    <span class="fa-layers fa-lg">
+                                            <i class="fas fa-circle"></i>
+                                            <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-8" style="font-weight:900">18+</span>
+                                    </span>
+                                </div>
+                                {{end}}
+                            </div>
+                            <div class="subject_image_container">
+                                <img class="subject_image {{if eq $Subject.NSFW 1}}pegi{{end}}" src="data:image/png;base64, {{$Subject.ToBase64}}" />
+                            </div>
+                            <div class="subject_tags">
+                                Tags : ​ {{range $Tag := $Subject.ConvertTags}}
+                                <a class="user_link" href="/tag/subject/{{$Tag}}"> ​ #{{$Tag}}</a>
+                                {{end}}
+                            </div>
+                            <div class="subject_description">
+                                Description : {{$Subject.Description}}
+                            </div>
+                            <div class="subject_author">
+                                Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Subject.Owner}}"> @{{$.GetOwnerUsername $Subject.Owner}}</a>
+                            </div>
+                            <div class="subject_last_update">
+                                Last Update : {{$Subject.LastPostDate}}
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            {{if $.Connected}}
+                                {{if or (eq $.User.Role "admin") (eq $.User.UUID $Subject.Owner)}}
+                                <a href="/update-subject/{{$Subject.Id}}" class="shortcuts_text">Update Subject <i class="fa-solid fa-file-pen"></i></a>
+                                {{end}}
+                            {{end}}
+                        </div>
+                        <div>
+                            {{$Vote := $.GetUpVoteDownVoteSubject $Subject}} {{if $.Connected}}
+                            <div class="like_dislike">
+                                <form action="/tag/{{$.Typ}}/{{$.Tag}}" method="POST">
+                                    <input type="hidden" name="type" value="subject" />
+                                    <input type="hidden" name="id" value="{{$Subject.Id}}" />
+                                    <input type="hidden" name="why" value="upvote" />
+                                    <div onClick="this.parentNode.submit();">
+                                        <i class="fa-solid fa-thumbs-up"></i>
+                                        <p>{{$Vote.UpVote}}</p>
+                                    </div>
+                                </form>
+                                <form action="/tag/{{$.Typ}}/{{$.Tag}}" method="POST">
+                                    <input type="hidden" name="type" value="subject" />
+                                    <input type="hidden" name="id" value="{{$Subject.Id}}" />
+                                    <input type="hidden" name="why" value="downvote" />
+                                    <div onClick="this.parentNode.submit();">
+                                        <i class="fa-solid fa-thumbs-down"></i>
+                                        <p>{{$Vote.DownVote}}</p>
+                                    </div>
+                                </form>
+                            </div>
+                            {{else}}
+                            <div class="like_dislike">
+                                <div>
+                                    <i class="fa-solid fa-thumbs-up"></i>
+                                    <p>{{$Vote.UpVote}}</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-thumbs-down"></i>
+                                    <p>{{$Vote.DownVote}}</p>
+                                </div>
+                                </form>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            {{end}}
+            {{if .Posts}}
+            <div class="explorer" style="height: 1000px; ;">
+                {{range $Post := .Posts}}
+                <div class="main_subject_container">
+                    <div class="subject">
+                        <div class="subject_click" onclick="window.location.href = '/post/{{$Post.Id}}';">
+                            <div class="subject_title">
+                                {{$Post.Title}} {{if eq $Post.NSFW 1}}
+                                <div style="margin-left: 15px;margin-top: 5px;">
+                                    <span class="fa-layers fa-lg">
+                                            <i class="fas fa-circle"></i>
+                                            <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-8" style="font-weight:900">18+</span>
+                                    </span>
+                                </div>
+                                {{end}}
+                            </div>
+                            <div class="subject_image_container">
+                                <img class="subject_image {{if eq $Post.NSFW 1}}pegi{{end}}" src="data:image/png;base64, {{$Post.ToBase64}}" />
+                            </div>
+                            <div class="subject_tags">
+                                Tags : ​ {{range $Tag := $Post.ConvertTags}}
+                                <a class="user_link" href="/tag/post/{{$Tag}}"> ​ #{{$Tag}}</a>
+                                {{end}}
+                            </div>
+                            <div class="subject_description">
+                                Description : {{$Post.Description}}
+                            </div>
+                            <div class="subject_author">
+                                Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Post.Owner}}"> @{{$.GetOwnerUsername $Post.Owner}}</a>
+                            </div>
+                            <div class="subject_last_update">
+                                Published : {{$Post.PublishDate}}
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            {{if $.Connected}}
+                                {{if or (eq $.User.Role "admin") (eq $.User.UUID $Post.Owner)}}
+                                <a href="/update-post/{{$Post.Id}}" class="shortcuts_text">Update Post <i class="fa-solid fa-file-pen"></i></a>
+                                {{end}}
+                            {{end}}
+                        </div>
+                        <div>
+                            {{$Vote := $.GetUpVoteDownVotePost $Post}} {{if $.Connected}}
+                            <div class="like_dislike">
+                                <form action="/tag/{{$.Typ}}/{{$.Tag}}" method="POST">
+                                    <input type="hidden" name="type" value="post" />
+                                    <input type="hidden" name="id" value="{{$Post.Id}}" />
+                                    <input type="hidden" name="why" value="upvote" />
+                                    <div onClick="this.parentNode.submit();">
+                                        <i class="fa-solid fa-thumbs-up"></i>
+                                        <p>{{$Vote.UpVote}}</p>
+                                    </div>
+                                </form>
+                                <form action="/tag/{{$.Typ}}/{{$.Tag}}" method="POST">
+                                    <input type="hidden" name="type" value="post" />
+                                    <input type="hidden" name="id" value="{{$Post.Id}}" />
+                                    <input type="hidden" name="why" value="downvote" />
+                                    <div onClick="this.parentNode.submit();">
+                                        <i class="fa-solid fa-thumbs-down"></i>
+                                        <p>{{$Vote.DownVote}}</p>
+                                    </div>
+                                </form>
+                            </div>
+                            {{else}}
+                            <div class="like_dislike">
+                                <div>
+                                    <i class="fa-solid fa-thumbs-up"></i>
+                                    <p>{{$Vote.UpVote}}</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-thumbs-down"></i>
+                                    <p>{{$Vote.DownVote}}</p>
+                                </div>
+                                </form>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            {{end}}
+            <div class="footer_container">
+                <div>
+                    <a class="shortcuts_text" href="/contact">Contact Us</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/license">Website License</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/GTU">General Terms of Use</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/privacy">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

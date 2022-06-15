@@ -1,48 +1,132 @@
-<!DOCTYPE HTML>
-<html lang="fr">
+<!DOCTYPE html>
+<html>
 
 <head>
     <meta charset="UTF-8">
-    <title>Edit Profile</title>
-    <link rel="stylesheet" type="text/css" href="style/register.css" />
-    <link rel="stylesheet" type="text/css" href="style/login.css" />
-    <script src="js/register.js"></script>
+    <title>Update Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/style/main.css" />
+    <link rel="stylesheet" type="text/css" href="/style/landing.css" />
+    <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+    <link rel="stylesheet" type="text/css" href="/style/login.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
+    <script src="/js/loading.js"></script>
+    <script src="/js/comment.js"></script>
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/5017b7341e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="page card-header">
-        <h3>Edit Profile</h1>
-            <form class="Login" action="/update-profile" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">
-                <label for="name"> Username :   </label>
-                <input type="text" id="name" name="username" value="{{.User.Username}}" />
-                <label for="mail">E-mail&nbsp;:</label>
-                <input type="email" id="mail" name="email" value="{{.User.Email}}" />
-                <label for="password"> Password :   </label>
-                <input type="password" id="password" name="password" autocomplete="new-password" />
-                <label for="ConfirmationPassword"> Confirmation Password :   </label>
-                <input type="password" id="Confirmation_Password" name="Confirmation_Password" autocomplete="new-password" />
-                <label for="Firstname">Firstname :</label>
-                <input id="text" name="firstname" value="{{.User.FirstName}}" />
-                <label for="LastName">LastName :</label>
-                <input type="text" id="LastName" name="lastname" value="{{.User.LastName}}" />
-                <label for="BirthDate">Birthdate :</label>
-                <input type="text" id="BirthDate" name="birthdate" onfocus="(this.type='date')" value="{{.User.BirthDate}}" />
-                <label for="Gender">Gender :</label>
-                <select id="Gender" name="genre">
-                <option value="Male" {{if eq .User.Genre "Male"}} selected {{end}} >Male</option>
-                <option value="Female" {{if eq .User.Genre "Female"}} selected {{end}}>Female</option>
-                <option value="Other" {{if eq .User.Genre "Other"}} selected {{end}} >Other</option>                
-            </select>
-                <label for="RiotId">LoL Account :</label>
-                <input type="text" id="riotid" name="riotid" value="{{.SummonerName}}" />
-                <label for="Bio">Bio :</label>
-                <input type="textarea" id="Bio" name="bio" value="{{.User.Bio}}" />
-                <label for="profilepicture">Profile picture :</label>
-                <input type="file" onchange="ppUpload()" id="profilepicture" name="profilepicture" accept="image/png, image/jpeg">
-                <p class="button">
-                    <button id="clickable">Edit Account</button>
-                </p>
-            </form>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
+    <div class="page">
+        <div class="subject_landing_layout">
+            <div class="nav_container">
+                <nav class="navbar">
+                    <div class="shortcuts_container">
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-tags"></i></i></i> Explore Subjects</a>
+                        </div>
+                        {{if .Connected}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/profile"> <i class="fa-solid fa-user"></i> My Profile</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                        </div>
+                        {{end}}
+                        <div class="shortcuts">
+                            <div class="shortcuts_btn shortcuts_text">
+                                <form action="/search" method="GET" style="display: flex;">
+                                    <input type="text" name="search-value" id="search-value" style="width: 70px; border-radius: 100px;font-size: 70%;background: #E7DFDD;" class="shortcuts_text"/>
+                                    <select name="search" id="search-type shortcuts_text" style="border-radius: 100px;margin-left:5px;margin-right:5px;font-size: 50%;background: #E7DFDD;">
+                                        <option value="Subject">Subject</option>
+                                        <option value="Post">Post</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                    <a onClick="this.parentNode.submit(); "><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        {{if .Connected}}
+                        <div class="profile_picture_container">
+                            <a href="/profile">
+                                <img class="profile_picture" src="data:image/png;base64, {{.User.ToBase64}}" />
+                            </a>
+                        </div>
+                        <div class="username_container">
+                            <p class="username">{{.User.Username}}</p>
+                        </div>
+                        {{else}}
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
+                        </div>
+                        {{end}}
+                    </div>
+                </nav>
+            </div>
+            <div class="main_container" style="display: block;">
+                <div class="card">
+                    <h3 style="text-align:center;font-family: 'Dosis', sans-serif;font-size: 200%;color: #0E0B16;">Update Profile</h1>
+                    <form class="Login" action="/update-profile" method="post" enctype="multipart/form-data" onkeyup="CheckPassword();">
+                        <label for="name"> Username :   </label>
+                        <input type="text" id="name" name="username" value="{{.User.Username}}" />
+                        <label for="mail">E-mail&nbsp;:</label>
+                        <input type="email" id="mail" name="email" value="{{.User.Email}}" />
+                        <label for="password"> Password :   </label>
+                        <input type="password" id="password" name="password" autocomplete="new-password" />
+                        <label for="ConfirmationPassword"> Confirmation Password :   </label>
+                        <input type="password" id="Confirmation_Password" name="Confirmation_Password" autocomplete="new-password" />
+                        <label for="Firstname">Firstname :</label>
+                        <input id="text" name="firstname" value="{{.User.FirstName}}" />
+                        <label for="LastName">LastName :</label>
+                        <input type="text" id="LastName" name="lastname" value="{{.User.LastName}}" />
+                        <label for="BirthDate">Birthdate :</label>
+                        <input type="text" id="BirthDate" name="birthdate" onfocus="(this.type='date')" value="{{.User.BirthDate}}" />
+                        <label for="Gender">Gender :</label>
+                        <select id="Gender" name="genre">
+                            <option value="Male" {{if eq .User.Genre "Male"}} selected {{end}} >Male</option>
+                            <option value="Female" {{if eq .User.Genre "Female"}} selected {{end}}>Female</option>
+                            <option value="Other" {{if eq .User.Genre "Other"}} selected {{end}} >Other</option>                
+                        </select>
+                        <label for="RiotId">LoL Account :</label>
+                        <input type="text" id="riotid" name="riotid" value="{{.SummonerName}}" />
+                        <label for="Bio">Bio :</label>
+                        <input type="textarea" id="Bio" name="bio" value="{{.User.Bio}}" />
+                        <label for="profilepicture">Profile picture :</label>
+                        <input type="file" onchange="ppUpload()" id="profilepicture" name="profilepicture" accept="image/png, image/jpeg">
+                        <p class="button">
+                            <button id="clickable" class="submit">Update Account</button>
+                        </p>
+                    </form>
+                </div>        
+            </div>
+            <div class="footer_container">
+                <div>
+                    <a class="shortcuts_text" href="/contact">Contact Us</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/license">Website License</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/GTU">General Terms of Use</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/privacy">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

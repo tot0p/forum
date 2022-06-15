@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type UpdateSubjectPage struct {
@@ -19,7 +20,7 @@ type UpdateSubjectPage struct {
 	ProfilePictureBase64 string
 }
 
-//Function to create a page on which you can update a subject
+//Method to create a page on which you can update a subject
 func (p *UpdateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {
@@ -29,14 +30,18 @@ func (p *UpdateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 		p.Connected = err == nil
 		p.ProfilePictureBase64 = base64.StdEncoding.EncodeToString(p.User.ProfilePicture)
 	}
+	if !p.Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	p.Subject, err = request.GetSubjectById(m["id"])
 	if err != nil {
 		fmt.Println(err.Error())
 		w.Write([]byte("error"))
 		return
 	}
-	if p.Subject.Owner != p.User.UUID && p.User.Role != "admin" {
-		w.Write([]byte("{\"error\":\"forbiden access\"}"))
+	if p.Subject.Owner != p.User.UUID && p.User.Role != "admin" && p.Subject.Id == "" {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	if r.Method == "POST" {
@@ -47,7 +52,7 @@ func (p *UpdateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 		p.Subject.Title = r.PostFormValue("title")
 		p.Subject.Description = r.PostFormValue("description")
 		nsfw := r.PostFormValue("nsfw")
-		p.Subject.Tags = r.PostFormValue("tags")
+		p.Subject.Tags = strings.Join(ParseTag(r.PostFormValue("tags")), "#")
 		if nsfw == "on" {
 			p.Subject.NSFW = 1
 		} else {
@@ -68,6 +73,7 @@ func (p *UpdateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 			w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
 			return
 		}
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))

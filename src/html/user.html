@@ -18,13 +18,19 @@
 </head>
 
 <body>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
     <div class="page">
-        <div class="profile_landing_layout" style="grid-template-rows: 100px 3000px 100px;">
+        <div class="profile_landing_layout" style="grid-template-rows: 100px 3100px 100px;">
             <div class="nav_container">
                 <nav class="navbar">
                     <div class="shortcuts_container">
                         <div class="shortcuts">
-                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-magnifying-glass"></i> Explore Subjects</a>
+                            <a class="shortcuts_btn shortcuts_text" href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-tags"></i></i></i> Explore Subjects</a>
                         </div>
                         {{if .Connected}}
                         <div class="shortcuts">
@@ -33,24 +39,37 @@
                         <div class="shortcuts">
                             <a class="shortcuts_btn shortcuts_text" href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
                         </div>
+                        {{end}}
+                        <div class="shortcuts">
+                            <div class="shortcuts_btn shortcuts_text">
+                                <form action="/search" method="GET" style="display: flex;">
+                                    <input type="text" name="search-value" id="search-value" style="width: 70px; border-radius: 100px;font-size: 70%;background: #E7DFDD;" class="shortcuts_text"/>
+                                    <select name="search" id="search-type shortcuts_text" style="border-radius: 100px;margin-left:5px;margin-right:5px;font-size: 50%;background: #E7DFDD;">
+                                        <option value="Subject">Subject</option>
+                                        <option value="Post">Post</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                    <a onClick="this.parentNode.submit(); "><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        {{if .Connected}}
+                        <div class="profile_picture_container">
+                            <a href="/profile">
+                                <img class="profile_picture" src="data:image/png;base64, {{.User.ToBase64}}" />
+                            </a>
+                        </div>
+                        <div class="username_container">
+                            <p class="username">{{.User.Username}}</p>
+                        </div>
                         {{else}}
                         <div class="shortcuts">
                             <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
                         </div>
                         <div class="shortcuts">
                             <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
-                        </div>
-                        {{end}}
-                    </div>
-                    <div class="profile">
-                        {{if .Connected}}
-                        <div class="profile_picture_container">
-                            <a href="/profile">
-                                <img class="profile_picture" src="data:image/png;base64, {{.UserOrigin.ToBase64}}" />
-                            </a>
-                        </div>
-                        <div class="username_container">
-                            <p class="username">{{.UserOrigin.Username}}</p>
                         </div>
                         {{end}}
                     </div>
@@ -81,9 +100,12 @@
                         <p>Genre : ​ </p> <i class="fa-solid fa-genderless"></i> {{end}}
                     </div>
                     <div class="profile_display">
-                        <p>Summoner Name : {{.SummonerName}}</p>
+                        <p>Bio : {{.User.Bio}}</p>
                     </div>
                     <div class="profile_display">
+                        <p>Summoner Name : {{.SummonerName}}</p>
+                    </div>
+                    <div class="profile_display" style="flex-direction: column;">
                         <p>Profile Picture</p>
                         <img src="data:image/png;base64, {{.User.ToBase64}}" style="width:100px" />
                     </div>
@@ -117,10 +139,12 @@
                                     {{end}}
                                 </div>
                                 <div class="post_image_container">
-                                    <img class="post_image" src="data:image/png;base64, {{$Post.ToBase64}}" />
+                                    <img class="post_image {{if eq $Post.NSFW 1}}pegi{{end}}" src="data:image/png;base64, {{$Post.ToBase64}}" />
                                 </div>
-                                <div class="post_tags">
-                                    Tags : {{$Post.Tags}}
+                                <div class="subject_tags">
+                                    Tags : ​ {{range $Tag := $Post.ConvertTags}}
+                                    <a class="user_link" href="/tag/post/{{$Tag}}"> ​ #{{$Tag}}</a>
+                                    {{end}}
                                 </div>
                                 <div class="post_author">
                                     Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Post.Owner}}"> @{{$.GetOwnerUsername $Post.Owner}}</a>
@@ -149,10 +173,12 @@
                                 {{end}}
                             </div>
                             <div class="subject_image_container">
-                                <img class="subject_image" src="data:image/png;base64, {{$Subject.ToBase64}}" />
+                                <img class="subject_image {{if eq $Subject.NSFW 1}}pegi{{end}}" src="data:image/png;base64, {{$Subject.ToBase64}}" />
                             </div>
                             <div class="subject_tags">
-                                Tags : {{$Subject.Tags}}
+                                Tags : ​ {{range $Tag := $Subject.ConvertTags}}
+                                <a class="user_link" href="/tag/subject/{{$Tag}}"> ​ #{{$Tag}}</a>
+                                {{end}}
                             </div>
                             <div class="subject_author">
                                 Made By ​ <a class="user_link" href="/user/{{$.GetOwnerUsername $Subject.Owner}}"> @{{$.GetOwnerUsername $Subject.Owner}}</a>
@@ -181,10 +207,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="loader">
-        <div id="loading"></div>
-    </div>
     </div>
 </body>
 

@@ -17,10 +17,12 @@ type riotAPI struct {
 	Key_api string
 }
 
+//Method to set the key for Riot api
 func (r *riotAPI) SetKey(key string) {
 	r.Key_api = key
 }
 
+//Method to get an user using an username from the Riot api
 func (riot *riotAPI) GetUserByName(pseudo string) modelsriot.User {
 	if pseudo == "" {
 		return modelsriot.User{}
@@ -42,6 +44,7 @@ func (riot *riotAPI) GetUserByName(pseudo string) modelsriot.User {
 
 }
 
+//Method to get an user using an id from the Riot api
 func (r *riotAPI) GetUserById(id string) modelsriot.User {
 	if id == "" {
 		return modelsriot.User{}
@@ -62,6 +65,7 @@ func (r *riotAPI) GetUserById(id string) modelsriot.User {
 	return result
 }
 
+//Method to get a rank using an id from the Riot api
 func (riot *riotAPI) GetRankById(id string) []modelsriot.Rank {
 	if id == "" {
 		return []modelsriot.Rank{}
@@ -82,6 +86,7 @@ func (riot *riotAPI) GetRankById(id string) []modelsriot.Rank {
 	return result
 }
 
+//Method to add the api key to the url
 func (riot *riotAPI) sign() string {
 	return "?api_key=" + riot.Key_api
 }

@@ -25,8 +25,9 @@ func ContainsPost(AllPosts []models.Post, post models.Post) bool {
 	return false
 }
 
-//Function to get all the post
+//Function to get all the posts
 func GetAllPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -43,6 +44,7 @@ func GetAllPost(paramsURL map[string]string, params map[string]interface{}, w ht
 
 //Function to get a random id post
 func GetNbRandomPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -80,8 +82,9 @@ func GetNbRandomPost(paramsURL map[string]string, params map[string]interface{},
 	w.Write(posts)
 }
 
-//Function to Search a post
+//Function to search a post
 func SearchPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetAllPost()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -109,6 +112,7 @@ func SearchPost(paramsURL map[string]string, params map[string]interface{}, w ht
 
 //Function to get a post using an id
 func GetPostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	postById, err := repository.GetPost("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -124,6 +128,7 @@ func GetPostById(paramsURL map[string]string, params map[string]interface{}, w h
 
 //Function to delete a post using an id
 func DeletePostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -157,6 +162,7 @@ func DeletePostById(paramsURL map[string]string, params map[string]interface{}, 
 
 //Function to create a post on the website
 func CreatePost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -196,8 +202,9 @@ func CreatePost(paramsURL map[string]string, params map[string]interface{}, w ht
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to modify a post using and id
+//Function to modify a post using an id
 func PutPostById(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -277,8 +284,9 @@ func PutPostById(paramsURL map[string]string, params map[string]interface{}, w h
 	}
 }
 
-//Function to get the last Post Created
+//Function to get the last post created
 func GetLastPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	allPosts, err := repository.GetLastPost()
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -310,8 +318,9 @@ func GetLastPost(paramsURL map[string]string, params map[string]interface{}, w h
 	w.Write(posts)
 }
 
-//Function to like a post
+//Function to upvote a post
 func PostLike(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -366,8 +375,9 @@ func PostLike(paramsURL map[string]string, params map[string]interface{}, w http
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to Hate a post
+//Function to downvote a post
 func PostHate(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -422,8 +432,9 @@ func PostHate(paramsURL map[string]string, params map[string]interface{}, w http
 	w.Write([]byte("{\"msg\":\"success\"}"))
 }
 
-//Function to count the like and the dislike on a post
+//Function to count upvotes and downvotes on a post
 func PostCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	Post, err := repository.GetPost("id", paramsURL["id"])
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -438,8 +449,9 @@ func PostCount(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(result)
 }
 
-//Function to tell if a use has already liked a post or not
+//Function to tell if an user has already upvoted or downvoted a post
 func UserLikeOrHatePost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	sess, err := session.GlobalSessions.Provider.SessionRead(authorization.GetAuthorizationBearer(w, r))
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -479,7 +491,9 @@ func UserLikeOrHatePost(paramsURL map[string]string, params map[string]interface
 	w.Write([]byte("{\"downvote\":false,\"upvote\":false}"))
 }
 
+//Function to get all the posts related to a subject
 func GetPostsBySubjectId(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	id := paramsURL["id"]
 	allPosts, err := repository.GetPostsBySubjectId(id)
 	if err != nil {
@@ -495,7 +509,9 @@ func GetPostsBySubjectId(paramsURL map[string]string, params map[string]interfac
 	w.Write(posts)
 }
 
+//Function to get all the posts created by an user using an id
 func GetPostsByUserId(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	id := paramsURL["id"]
 	allPosts, err := repository.GetPostsByUserId(id)
 	if err != nil {
@@ -503,6 +519,29 @@ func GetPostsByUserId(paramsURL map[string]string, params map[string]interface{}
 		return
 	}
 	posts, err := json.Marshal(allPosts)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	w.Write(posts)
+}
+
+func GetPostByTag(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
+	tag := strings.ToLower(paramsURL["tag"])
+	allPosts, err := repository.GetAllPost()
+	if err != nil {
+		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
+		return
+	}
+	Posts := []models.Post{}
+	for _, i := range *allPosts {
+		if i.HaveTag(tag) {
+			Posts = append(Posts, i)
+		}
+	}
+	posts, err := json.Marshal(Posts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))

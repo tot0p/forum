@@ -14,4 +14,5 @@ function onReady(callback) {
   onReady(function() {
     setVisible('.page', true);
     document.body.removeChild(document.querySelector(".loader"))
+    document.body.removeChild(document.querySelector(".loader"))
   });

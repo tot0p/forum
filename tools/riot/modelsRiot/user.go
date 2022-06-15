@@ -12,6 +12,7 @@ type User struct {
 	SummonerLevel int    `json:"summonerLevel"`
 }
 
+//Method to get the image related to Riot stuff
 func (u *User) GetImgIcon() string {
 	return "http://ddragon.leagueoflegends.com/cdn/12.10.1/img/profileicon/" + strconv.Itoa(u.ProfileIconId) + ".png"
 }

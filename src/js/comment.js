@@ -2,8 +2,12 @@ function AddComment() {
 
     const form = document.getElementById('form');
     if (form !== null) {
+        div = document.getElementById('cc')
+        div.setAttribute('class','notshow')
         form.remove()
     } else {
+        div = document.getElementById('cc')
+        div.setAttribute('class','show')
         var f = document.createElement("form");
         f.setAttribute('method',"post");
         f.setAttribute('action',"#");

@@ -16,12 +16,36 @@ import (
 )
 
 type CreatePostPage struct {
-	Path       string
-	AllSubject []models.Subject
+	Path           string
+	AllSubject     []models.Subject
+	Connected      bool
+	User           models.User
+	DefaultSubject string
 }
 
-//Function to create page for a post
+//Function to create a page for a post
 func (p *CreatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
+	cookie, err := r.Cookie("SID")
+	if err != nil {
+		p.Connected = false
+	} else {
+		p.User, err = request.GetMe(cookie.Value)
+		p.Connected = err == nil
+	}
+	if !p.Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	p.DefaultSubject = ""
+	if r.Method == "GET" {
+		params := map[string]string{}
+		for k, elem := range r.URL.Query() {
+			params[k] = strings.Join(elem, ",")
+		}
+		if _, ok := params["subjectId"]; ok {
+			p.DefaultSubject = params["subjectId"]
+		}
+	}
 	p.AllSubject, _ = request.GetAllSubject()
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
@@ -50,7 +74,7 @@ func (p *CreatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map
 		} else {
 			Data["nsfw"] = 0
 		}
-		Data["tags"] = strings.Split(fmt.Sprintf("%v", Data["tags"]), "#")
+		Data["tags"] = ParseTag(fmt.Sprintf("%v", Data["tags"]))
 		url := os.Getenv("url_api")
 		url += "post"
 		jsonData, err := json.Marshal(Data)
@@ -76,6 +100,7 @@ func (p *CreatePostPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map
 		if err != nil {
 			log.Fatal(err)
 		}
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))

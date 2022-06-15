@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"forum/models"
+	"forum/tools"
 	"forum/tools/request"
 	"html/template"
 	"io/ioutil"
@@ -25,7 +26,17 @@ type Page struct {
 	Stats                models.AllCount
 }
 
-//Function to get the Username of the actual session
+//Function to upvote or downvote a subject
+func (i Page) GetUpVoteDownVoteSubject(subj models.Subject) models.Vote {
+	return subj.GetVote()
+}
+
+//Function to upvote or downvote a post
+func (i Page) GetUpVoteDownVotePost(post models.Post) models.Vote {
+	return post.GetVote()
+}
+
+//Function to get the username of the actual session
 func (i Page) GetOwnerUsername(UUID string) string {
 	if _, ok := i.Usernames[UUID]; ok {
 		return i.Usernames[UUID]
@@ -57,6 +68,26 @@ func (i *Page) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]st
 		i.User, err = request.GetMe(cookie.Value)
 		i.Connected = err == nil
 		i.ProfilePictureBase64 = base64.StdEncoding.EncodeToString(i.User.ProfilePicture)
+	}
+	if r.Method == "POST" && i.Connected {
+		resp, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.Write([]byte("{\"msg\":\"error request\"}"))
+			return
+		}
+		params := tools.PlaintTextToMap(resp)
+		if typ, ok := params["type"]; ok && typ != "" {
+			if id, ok := params["id"]; ok && id != "" {
+				if why, ok := params["why"]; ok && why != "" {
+					if params["type"] == "subject" {
+						request.LikeSubject(params["id"], cookie.Value, params["why"])
+					} else if params["type"] == "post" {
+						request.LikePost(params["id"], cookie.Value, params["why"])
+					}
+				}
+			}
+
+		}
 	}
 	resp, err := http.Get(os.Getenv("url_api") + "subject/GetLastSubjectUpdate/15")
 	if err != nil {
@@ -94,7 +125,6 @@ func (i *Page) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]st
 	if err != nil {
 		i.LatestSubjects = nil
 	}
-
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + i.Path))
 	tmpl.Execute(w, i)

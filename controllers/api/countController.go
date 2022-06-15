@@ -8,8 +8,9 @@ import (
 	"net/http"
 )
 
-//Function to get the number of user on the website
+//Function to get the number of users on the website
 func GetNBUser(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	userById, err := repository.Count("user")
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -23,8 +24,9 @@ func GetNBUser(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(user)
 }
 
-//Function to get the number of subject created
+//Function to get the number of subjects created
 func GetNBSubject(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	subjectById, err := repository.Count("subject")
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -38,8 +40,9 @@ func GetNBSubject(paramsURL map[string]string, params map[string]interface{}, w 
 	w.Write(subject)
 }
 
-//Function to get the number of post created
+//Function to get the number of posts created
 func GetNBPost(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	postById, err := repository.Count("post")
 	if err != nil {
 		w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
@@ -53,8 +56,9 @@ func GetNBPost(paramsURL map[string]string, params map[string]interface{}, w htt
 	w.Write(post)
 }
 
-//Function to get all the counter on the website
+//Function to get all the counters on the website
 func GetCount(paramsURL map[string]string, params map[string]interface{}, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-Type", "application/json")
 	counters := models.AllCount{}
 	count, err := repository.Count("post")
 	if err != nil {

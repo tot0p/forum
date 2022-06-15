@@ -1,36 +1,102 @@
 <!DOCTYPE HTML>
 <html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <title>login Page</title>
-    <link rel="stylesheet" type="text/css" href="style/login.css" />
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/style/main.css" />
+        <link rel="stylesheet" type="text/css" href="/style/landing.css" />
+        <link rel="stylesheet" type="text/css" href="/style/subject.css" />
+        <link rel="stylesheet" type="text/css" href="/style/login.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap" rel="stylesheet">
+        <script src="/js/loading.js"></script>
+        <script src="/js/comment.js"></script>
+        <!-- fontawesome -->
+        <script src="https://kit.fontawesome.com/5017b7341e.js" crossorigin="anonymous"></script>
+    </head>
 
 <body>
-    <div class="card">
-        <div class="card-header">
-            <h3>Sign in</h3>
+    <div class="loader">
+        <div id="loading"></div>
+    </div>
+    <div class="page">
+        <div class="landing_layout">
+            <div class="nav_container">
+                <nav class="navbar">
+                    <div class="shortcuts_container">
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/explorer"><i class="fa-solid fa-tags"></i></i></i> Explore Subjects</a>
+                        </div>
+                        <div class="shortcuts">
+                            <div class="shortcuts_btn shortcuts_text">
+                                <form action="/search" method="GET" style="display: flex;">
+                                    <input type="text" name="search-value" id="search-value" style="width: 70px; border-radius: 100px;font-size: 70%;background: #E7DFDD;" class="shortcuts_text"/>
+                                    <select name="search" id="search-type shortcuts_text" style="border-radius: 100px;margin-left:5px;margin-right:5px;font-size: 50%;background: #E7DFDD;">
+                                        <option value="Subject">Subject</option>
+                                        <option value="Post">Post</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                    <a onClick="this.parentNode.submit(); "><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/login"><i class="fa-regular fa-circle-user"></i> Login</a>
+                        </div>
+                        <div class="shortcuts">
+                            <a class="shortcuts_btn shortcuts_text" href="/register"><i class="fa-regular fa-id-badge"></i> Register</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="main_container" style="display: block;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="text-align:center;font-family: 'Dosis', sans-serif;font-size: 200%;color: #0E0B16;">Login</h3>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                    <form class="Login" action="/login" method="post">
+                        <label for="username" style="white-space: nowrap;"> Username :   </label>
+                        <input type="text" id="username" placeholder="Username" name="username" required/>
+                        <label for="password" style="white-space: nowrap;"> Password :   </label>
+                        <input type="password" style="white-space: nowrap;" id="password" placeholder="Password" name="password" required/>
+                        <p class="button">
+                            <button id="clickable" class="submit">Login</button>
+                        </p>
+                    </form>
+                    {{if .Err}}
+                    <div class="Error">
+                        <p>
+                            {{.Err}}
+                        </p>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+            <div class="footer_container">
+                <div>
+                    <a class="shortcuts_text" href="/contact">Contact Us</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/license">Website License</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/GTU">General Terms of Use</a>
+                </div>
+                <div>
+                    <a class="shortcuts_text" href="/privacy">Privacy Policy</a>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-        </div>
-        <form class="Login" action="/login" method="post">
-            <label for="username" style="white-space: nowrap;"> Username :   </label>
-            <input type="text" id="username" placeholder="Username" name="username" required/>
-            <label for="password" style="white-space: nowrap;"> Password :   </label>
-            <input type="password" style="white-space: nowrap;" id="password" placeholder="Password" name="password" required/>
-            <p class="button">
-                <input class="submit" type="submit" />
-            </p>
-        </form>
-
-        {{if .Err}}
-        <div class="Error">
-            <p>
-                {{.Err}}
-            </p>
-        </div>
-        {{end}}
     </div>
 </body>
 

@@ -11,7 +11,7 @@ type SignOutPage struct {
 	User      models.User
 }
 
-//Function to signout on the api
+//Method to signout on the api
 func (s *SignOutPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	cookie, err := r.Cookie("SID")
 	if err != nil {

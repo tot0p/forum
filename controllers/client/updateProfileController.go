@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"forum/models"
 	"forum/tools/request"
 	"forum/tools/riot"
@@ -15,21 +14,28 @@ type UpdateProfilePage struct {
 	Path         string
 	User         models.User
 	SummonerName string
+	Connected    bool
 }
 
-//Function to create a page on which you can update a profile
+//Method to create a page on which you can update a profile
 func (p *UpdateProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
 	var err error
 	p.User = models.User{}
 	cookie, err := r.Cookie("SID")
 	if err != nil {
-		fmt.Println(err)
+		p.Connected = false
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 	p.User, err = request.GetMe(cookie.Value)
-	p.SummonerName = riot.API.GetUserById(p.User.RiotId).Name
 	if err != nil {
-		fmt.Println(err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	} else {
+		p.User, err = request.GetMe(cookie.Value)
+		p.Connected = err == nil
 	}
+	p.SummonerName = riot.API.GetUserById(p.User.RiotId).Name
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
 		if err != nil {
@@ -59,6 +65,7 @@ func (p *UpdateProfilePage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 			w.Write([]byte("{\"err\":\"500\",\"msg\":\"" + err.Error() + "\"}"))
 			return
 		}
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))

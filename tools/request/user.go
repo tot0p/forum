@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+//Function to get all the users from the api
 func GetAllUser(SID string) ([]models.User, error) {
 	//init
 	All_user := []models.User{}
@@ -47,16 +48,15 @@ func GetAllUser(SID string) ([]models.User, error) {
 	return All_user, nil
 }
 
+//Function to get an user using an username from the api
 func GetUserByName(name string) (models.User, error) {
 	user := models.User{}
 	url := os.Getenv("url_api") + "user/by-username/" + name
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
-
 	if err != nil {
 		return user, err
 	}
-
 	resp, err := client.Do(req)
 	if err != nil {
 		return models.User{}, err
@@ -80,16 +80,15 @@ func GetUserByName(name string) (models.User, error) {
 	return user, nil
 }
 
+//Function to get your user from the api
 func GetMe(SID string) (models.User, error) {
 	user := models.User{}
 	url := os.Getenv("url_api") + "user"
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
-
 	if err != nil {
 		return user, err
 	}
-
 	authorization.SetAuthorizationBearer(SID, req)
 	resp, err := client.Do(req)
 	if err != nil {
@@ -114,6 +113,7 @@ func GetMe(SID string) (models.User, error) {
 	return user, nil
 }
 
+//Function to modify an user on the api
 func PutUser(user models.User, SID string) error {
 	url := os.Getenv("url_api") + "user"
 	client := &http.Client{}
@@ -131,7 +131,6 @@ func PutUser(user models.User, SID string) error {
 	} else {
 		modifiedUser["profilepicture"] = ""
 	}
-
 	data, err := json.Marshal(modifiedUser)
 	if err != nil {
 		return err
@@ -165,10 +164,10 @@ func PutUser(user models.User, SID string) error {
 	return nil
 }
 
+//Function to get the username of an user from the api
 func GetUserUsername(UUID string) string {
 	client := &http.Client{}
 	url := os.Getenv("url_api") + "username"
-
 	params := make(map[string]string)
 	params["UUID"] = UUID
 	data, err := json.Marshal(params)
@@ -193,6 +192,7 @@ func GetUserUsername(UUID string) string {
 	return jsonReqBody["username"]
 }
 
+//Function to delete an user using an id on the api
 func DeleteUserById(id, SID string) error {
 	url := os.Getenv("url_api") + "user/" + id
 	client := &http.Client{}
@@ -221,16 +221,27 @@ func DeleteUserById(id, SID string) error {
 	return nil
 }
 
-// func GetUserById(sess *session.SessionStore) (models.User, error) {
-// 	user := models.User{}
-// 	url := os.Getenv("url_api") + "users"
-// 	client := &http.Client{}
-// 	req, err := http.NewRequest("GET", url, nil)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if !tools.IsConnected(sess) {
-// 		return nil, errors.New("You are not connected")
-// 	}
+func GetSearchUser(s string) ([]models.User, error) {
+	All_user := []models.User{}
+	url := os.Getenv("url_api") + "user/search/" + s
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
 
-// }
+	//request
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(reqBody, &All_user)
+	if err != nil {
+		return nil, err
+	}
+	return All_user, nil
+}

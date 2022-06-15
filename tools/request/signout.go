@@ -11,6 +11,7 @@ import (
 
 // api/signout
 
+//Function to signout an user on the api
 func SignOutUser(SID string) error {
 	url := os.Getenv("url_api") + "signout"
 	client := &http.Client{}

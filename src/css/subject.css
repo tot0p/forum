@@ -38,13 +38,10 @@
 
 .subject_description {
     display: flex;
-    align-items: center;
-    width: 300px;
-    white-space: nowrap;
+    width: 500px;
+    height: 200px;
     overflow: hidden;
-    text-overflow: ellipsis;
     text-align: left;
-    margin-left: 50px;
     grid-area: 2 / 2 / 3 / 3;
     font-family: 'Dosis', sans-serif;
     font-size: 100%;
@@ -97,4 +94,42 @@
     grid-auto-flow: row;
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+.show{
+    display: flex;
+    width: auto;
+    grid-auto-columns: 1fr 1fr;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-radius: 50px;
+    border: double 5px transparent;
+    background-image: linear-gradient(#A239CA, #A239CA), linear-gradient(#4717F6, #4717F6);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    margin-left: 30px;
+    margin-right: 30px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    transition: all .3s ease-out;
+}
+
+.notshow{
+    display: none;
+    width: auto;
+    grid-auto-columns: 1fr 1fr;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-radius: 50px;
+    border: double 5px transparent;
+    background-image: linear-gradient(#A239CA, #A239CA), linear-gradient(#4717F6, #4717F6);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    margin-left: 30px;
+    margin-right: 30px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    transition: all .3s ease-out;
 }

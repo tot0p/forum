@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+//Function to convert a plain text to a map
 func PlaintTextToMap(Request []byte) map[string]string {
 	Str := string(Request)
 	Datas := strings.Split(Str, "&")
@@ -14,9 +15,11 @@ func PlaintTextToMap(Request []byte) map[string]string {
 	for i := 0; i < len(Datas); i++ {
 		Str = Datas[i]
 		Splited = strings.Split(Str, "=")
-		key = Splited[0]
-		value = Splited[1]
-		Data[key] = value
+		if len(Splited) == 2 {
+			key = Splited[0]
+			value = Splited[1]
+			Data[key] = value
+		}
 	}
 	return Data
 }

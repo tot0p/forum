@@ -13,6 +13,7 @@ func init() {
 	rand.Seed(time.Now().Unix())
 }
 
+//Function to create a image
 func CreateImg() []byte {
 	width := 420
 	height := 420
@@ -46,6 +47,7 @@ func CreateImg() []byte {
 	return buff.Bytes()
 }
 
+//Function to draw a square for the image
 func drawCarre(startx, starty int, c color.Color, img *image.RGBA) {
 	for x := startx; x < startx+30; x++ {
 		for y := starty; y < starty+30; y++ {

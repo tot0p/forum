@@ -83,9 +83,8 @@ func InsertUserTable(user models.User) error {
 		'%s',
 		'%s',
 		'%s',
-		'%d',
-		'%s'
-	);`, user.UUID, user.ProfilePicture, strings.Replace(user.Username, "'", "''", -1), user.Password, user.Email, strings.Replace(user.FirstName, "'", "''", -1), strings.Replace(user.LastName, "'", "''", -1), user.RiotId, user.OauthToken, user.BirthDate, strings.Replace(user.Genre, "'", "''", -1), strings.Replace(user.Role, "'", "''", -1), strings.Replace(user.Title, "'", "''", -1), strings.Replace(user.Bio, "'", "''", -1), user.Premium, strings.Replace(user.Follows, "'", "''", -1)))
+		'%d'
+	);`, user.UUID, user.ProfilePicture, strings.Replace(user.Username, "'", "''", -1), user.Password, user.Email, strings.Replace(user.FirstName, "'", "''", -1), strings.Replace(user.LastName, "'", "''", -1), user.RiotId, user.OauthToken, user.BirthDate, strings.Replace(user.Genre, "'", "''", -1), strings.Replace(user.Role, "'", "''", -1), strings.Replace(user.Title, "'", "''", -1), strings.Replace(user.Bio, "'", "''", -1), user.Premium))
 	return err
 }
 
@@ -105,14 +104,13 @@ func GetUser(searchColumn, searchValue string) (*models.User, error) {
 	role,
 	title,
 	bio,
-	premium,
-	follows
+	premium
 FROM user WHERE
 %s = '%s';`, searchColumn, strings.Replace(searchValue, "'", "''", -1)))
 	isPresent := false
 	user := new(models.User)
 	for rows.Next() {
-		rows.Scan(&user.UUID, &str, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium, &user.Follows)
+		rows.Scan(&user.UUID, &str, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -141,13 +139,12 @@ func GetAllUser() (*[]models.User, error) {
 	role,
 	title,
 	bio,
-	premium,
-	follows
+	premium
 	FROM user;`)
 	userTable := new([]models.User)
 	for rows.Next() {
 		user := new(models.User)
-		rows.Scan(&user.UUID, &str, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium, &user.Follows)
+		rows.Scan(&user.UUID, &str, &user.Username, &user.Password, &user.Email, &user.FirstName, &user.LastName, &user.RiotId, &user.OauthToken, &user.BirthDate, &user.Genre, &user.Role, &user.Title, &user.Bio, &user.Premium)
 		user.ProfilePicture, err = hex.DecodeString(str)
 		*userTable = append(*userTable, *user)
 		if err != nil {
@@ -173,9 +170,8 @@ func PostUser(user models.User, searchColumn, searchValue string) error {
 		role = '%s',
 		title = '%s',
 		bio = '%s',
-		premium = '%d',
-		follows = '%s'
-  WHERE %s = '%s';`, user.UUID, user.ProfilePicture, strings.Replace(user.Username, "'", "''", -1), user.Password, user.Email, strings.Replace(user.FirstName, "'", "''", -1), strings.Replace(user.LastName, "'", "''", -1), user.RiotId, user.OauthToken, user.BirthDate, strings.Replace(user.Genre, "'", "''", -1), strings.Replace(user.Role, "'", "''", -1), strings.Replace(user.Title, "'", "''", -1), strings.Replace(user.Bio, "'", "''", -1), user.Premium, strings.Replace(user.Follows, "'", "''", -1), searchColumn, strings.Replace(searchValue, "'", "''", -1)))
+		premium = '%d'
+  WHERE %s = '%s';`, user.UUID, user.ProfilePicture, strings.Replace(user.Username, "'", "''", -1), user.Password, user.Email, strings.Replace(user.FirstName, "'", "''", -1), strings.Replace(user.LastName, "'", "''", -1), user.RiotId, user.OauthToken, user.BirthDate, strings.Replace(user.Genre, "'", "''", -1), strings.Replace(user.Role, "'", "''", -1), strings.Replace(user.Title, "'", "''", -1), strings.Replace(user.Bio, "'", "''", -1), user.Premium, searchColumn, strings.Replace(searchValue, "'", "''", -1)))
 	return err
 }
 

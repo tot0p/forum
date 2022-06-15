@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+//Function to get all the posts from the api
 func GetAllPost() ([]models.Post, error) {
 	AllPosts := []models.Post{}
 	url := os.Getenv("url_api") + "posts"
@@ -43,6 +44,7 @@ func GetAllPost() ([]models.Post, error) {
 	return AllPosts, nil
 }
 
+//Function to get a post using an id from the api
 func GetPostById(id string) (models.Post, error) {
 	Post := models.Post{}
 	url := os.Getenv("url_api") + "post/" + id
@@ -74,6 +76,7 @@ func GetPostById(id string) (models.Post, error) {
 	return Post, nil
 }
 
+//Function to modify a post in the api using an id
 func PutPost(post models.Post, SID string) error {
 	url := os.Getenv("url_api") + "post"
 	client := &http.Client{}
@@ -91,7 +94,6 @@ func PutPost(post models.Post, SID string) error {
 	} else {
 		modifiedPost["image"] = ""
 	}
-
 	data, err := json.Marshal(modifiedPost)
 	if err != nil {
 		return err
@@ -125,6 +127,7 @@ func PutPost(post models.Post, SID string) error {
 	return nil
 }
 
+//Function to delete a post in the api using an id
 func DeletePostById(id, SID string) error {
 	url := os.Getenv("url_api") + "post/" + id
 	client := &http.Client{}
@@ -153,6 +156,7 @@ func DeletePostById(id, SID string) error {
 	return nil
 }
 
+//Function to get all the posts related to a subject using an id from the api
 func GetPostsBySubjectId(id string) ([]models.Post, error) {
 	url := os.Getenv("url_api") + "post/GetPostsBySubject/" + id
 	client := &http.Client{}
@@ -177,6 +181,7 @@ func GetPostsBySubjectId(id string) ([]models.Post, error) {
 	return jsonReqBody, nil
 }
 
+//Function to get all the posts created by an user using an id from the api
 func GetPostsByUserId(id string) ([]models.Post, error) {
 	url := os.Getenv("url_api") + "post/GetPostsByUser/" + id
 	client := &http.Client{}
@@ -199,4 +204,83 @@ func GetPostsByUserId(id string) ([]models.Post, error) {
 		return nil, err
 	}
 	return jsonReqBody, nil
+}
+
+//Function to upvote a post in the api
+func LikePost(id, SID, votes string) (string, error) {
+	url := os.Getenv("url_api") + "post/" + id
+	if votes == "upvote" {
+		url += "/upvote"
+	} else if votes == "downvote" {
+		url += "/downvote"
+	} else {
+		return "", nil
+	}
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("content-Type", "application/json")
+	authorization.SetAuthorizationBearer(SID, req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	result := ""
+	err = json.Unmarshal(reqBody, &result)
+	if err != nil {
+		return "", err
+	}
+	return result, nil
+}
+
+func GetSearchPosts(s string) ([]models.Post, error) {
+	AllPosts := []models.Post{}
+	url := os.Getenv("url_api") + "post/search/" + s
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(reqBody, &AllPosts)
+	if err != nil {
+		return nil, err
+	}
+	return AllPosts, nil
+}
+
+func GetPostsByTag(s string) ([]models.Post, error) {
+	AllPosts := []models.Post{}
+	url := os.Getenv("url_api") + "post/GetPostsByTag/" + s
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	reqBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(reqBody, &AllPosts)
+	if err != nil {
+		return nil, err
+	}
+	return AllPosts, nil
 }

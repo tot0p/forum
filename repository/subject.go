@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"forum/models"
@@ -69,7 +70,7 @@ func InsertSubjectTable(subject models.Subject) error {
 		'%s',
 		'%s'
 	);
-`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner))
+`, strings.Replace(subject.Title, "'", "''", -1), strings.Replace(subject.Description, "'", "''", -1), subject.NSFW, subject.Image, strings.Replace(subject.Tags, "'", "''", -1), subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner))
 	return err
 }
 
@@ -87,7 +88,7 @@ func GetSubject(searchColumn, searchValue string) (*models.Subject, error) {
 	lastPostDate,
 	owner
 FROM subject WHERE
-%s = '%s';`, searchColumn, searchValue))
+%s = '%s';`, searchColumn, strings.Replace(searchValue, "'", "''", -1)))
 	subject := new(models.Subject)
 	for rows.Next() {
 		rows.Scan(&subject.Id, &subject.Title, &subject.Description, &subject.NSFW, &str, &subject.Tags, &subject.UpVotes, &subject.DownVotes, &subject.PublishDate, &subject.LastPostDate, &subject.Owner)
@@ -138,7 +139,7 @@ func PostSubject(subject models.Subject, searchColumn, searchValue string) error
 		publishDate = '%s',
 		lastPostDate = '%s',
 		owner = '%s'
-  WHERE %s = '%s';`, subject.Title, subject.Description, subject.NSFW, subject.Image, subject.Tags, subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner, searchColumn, searchValue))
+  WHERE %s = '%s';`, strings.Replace(subject.Title, "'", "''", -1), strings.Replace(subject.Description, "'", "''", -1), subject.NSFW, subject.Image, strings.Replace(subject.Tags, "'", "''", -1), subject.UpVotes, subject.DownVotes, subject.PublishDate, subject.LastPostDate, subject.Owner, searchColumn, searchValue))
 	return err
 }
 

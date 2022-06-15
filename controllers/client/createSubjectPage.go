@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"forum/models"
 	"forum/tools/authorization"
+	"forum/tools/request"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -14,12 +16,25 @@ import (
 )
 
 type CreateSubjectPage struct {
-	Path  string
-	Error string
+	Path      string
+	Error     string
+	Connected bool
+	User      models.User
 }
 
-//Function to create page for a subject
+//Function to create a page for a subject
 func (p *CreateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m map[string]string) {
+	cookie, err := r.Cookie("SID")
+	if err != nil {
+		p.Connected = false
+	} else {
+		p.User, err = request.GetMe(cookie.Value)
+		p.Connected = err == nil
+	}
+	if !p.Connected {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	if r.Method == "POST" {
 		err := r.ParseMultipartForm(5 << 20) // allocate 5mb of ram for the form
 		if err != nil {
@@ -46,7 +61,7 @@ func (p *CreateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 		} else {
 			Data["nsfw"] = 0
 		}
-		Data["tags"] = strings.Split(fmt.Sprintf("%v", Data["tags"]), "#")
+		Data["tags"] = ParseTag(fmt.Sprintf("%v", Data["tags"]))
 		url := os.Getenv("url_api") + "subject"
 		jsonData, err := json.Marshal(Data)
 		if err != nil {
@@ -71,8 +86,21 @@ func (p *CreateSubjectPage) ServeHTTP(w http.ResponseWriter, r *http.Request, m 
 		if err != nil {
 			log.Fatal(err)
 		}
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles(CurrentFolder + p.Path))
 	tmpl.Execute(w, p)
+}
+
+func ParseTag(s string) []string {
+	s = strings.Replace(s, "#", "", -1)
+	temp := strings.Split(s, " ")
+	temp2 := []string{""}
+	for _, i := range temp {
+		if i != "" {
+			temp2 = append(temp2, i)
+		}
+	}
+	return temp2
 }
