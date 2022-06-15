@@ -51,7 +51,7 @@ Don't need the SID
 **Code : 200(OK)**
 
 ```http
-  GET /api/user/search/:word
+GET /api/user/search/:word
 ``` 
 
 **Code : 200 (OK)**
