@@ -28,8 +28,8 @@ Link to the [license](https://www.mozilla.org/en-US/MPL/2.0/)
 
 ## Authors
 
-- [@tot0p](https://git.ytrack.learn.ynov.com/TLEMAITRE1)
-- [@mkarten](https://git.ytrack.learn.ynov.com/LMORGADO)
-- [@SambreV95](https://git.ytrack.learn.ynov.com/SVANDERCOILDEN)
-- [@Axou89](https://git.ytrack.learn.ynov.com/ASENECAL)
-- [@Aless](https://git.ytrack.learn.ynov.com/AFARAJALLAH)
+- [@tot0p](https://github.com/tot0p)
+- [@mkarten](https://github.com/mkarten)
+- [@SambreV95](https://github.com/SambreV95)
+- [@Axou89](https://github.com/Axou89)
+- [@Aless](https://github.com/aless124)
